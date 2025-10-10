@@ -1,0 +1,167 @@
+[
+    {
+        "text": "Transação no iFood de R$ 35,90 para Burger King em 01/10/2025. Categoria: delivery, Banco: Nubank.",
+        "metadata": {
+            "transaction_id": 1,
+            "user_id": 123,
+            "category": "delivery",
+            "bank": "nubank",
+            "amount": -35.90,
+            "date": "2025-10-01"
+        }
+    },
+    {
+        "text": "Compra no Uber Eats de R$ 28,50 no McDonald's em 02/10/2025. Categoria: delivery, Banco: Nubank.",
+        "metadata": {
+            "transaction_id": 2,
+            "user_id": 123,
+            "category": "delivery",
+            "bank": "nubank",
+            "amount": -28.50,
+            "date": "2025-10-02"
+        }
+    },
+    {
+        "text": "Assinatura Netflix cobrada R$ 25,90 em 03/10/2025. Categoria: assinaturas, Banco: Itaú. Serviço de streaming.",
+        "metadata": {
+            "transaction_id": 3,
+            "user_id": 123,
+            "category": "assinaturas",
+            "bank": "itau",
+            "amount": -25.90,
+            "date": "2025-10-03"
+        }
+    },
+    {
+        "text": "Spotify Premium mensalidade de R$ 16,90 debitada em 03/10/2025. Categoria: assinaturas, Banco: Itaú.",
+        "metadata": {
+            "transaction_id": 4,
+            "user_id": 123,
+            "category": "assinaturas",
+            "bank": "itau",
+            "amount": -16.90,
+            "date": "2025-10-03"
+        }
+    },
+    {
+        "text": "Salário recebido da Empresa XYZ no valor de R$ 4.500,00 em 04/10/2025. Categoria: salário, Banco: Itaú.",
+        "metadata": {
+            "transaction_id": 5,
+            "user_id": 123,
+            "category": "salario",
+            "bank": "itau",
+            "amount": 4500.00,
+            "date": "2025-10-04"
+        }
+    },
+    {
+        "text": "Pedido no Rappi de açaí custando R$ 22,00 em 04/10/2025. Categoria: delivery, Banco: Nubank.",
+        "metadata": {
+            "transaction_id": 6,
+            "user_id": 123,
+            "category": "delivery",
+            "bank": "nubank",
+            "amount": -22.00,
+            "date": "2025-10-04"
+        }
+    },
+    {
+        "text": "Amazon Prime assinatura mensal R$ 9,90 em 30/09/2025. Categoria: assinaturas, Banco: Nubank.",
+        "metadata": {
+            "transaction_id": 7,
+            "user_id": 123,
+            "category": "assinaturas",
+            "bank": "nubank",
+            "amount": -9.90,
+            "date": "2025-09-30"
+        }
+    },
+    {
+        "text": "Abastecimento no Posto Shell com gasolina R$ 120,00 em 01/10/2025. Categoria: transporte, Banco: Itaú.",
+        "metadata": {
+            "transaction_id": 8,
+            "user_id": 123,
+            "category": "transporte",
+            "bank": "itau",
+            "amount": -120.00,
+            "date": "2025-10-01"
+        }
+    },
+    {
+        "text": "Compras no Supermercado Pão de Açúcar R$ 185,30 em 02/10/2025. Categoria: alimentação, Banco: Itaú.",
+        "metadata": {
+            "transaction_id": 9,
+            "user_id": 123,
+            "category": "alimentacao",
+            "bank": "itau",
+            "amount": -185.30,
+            "date": "2025-10-02"
+        }
+    },
+    {
+        "text": "Medicamentos na Farmácia Droga Raia R$ 45,80 em 02/10/2025. Categoria: saúde, Banco: Nubank.",
+        "metadata": {
+            "transaction_id": 10,
+            "user_id": 123,
+            "category": "saude",
+            "bank": "nubank",
+            "amount": -45.80,
+            "date": "2025-10-02"
+        }
+    },
+    {
+        "text": "Ingresso de cinema no Cinemark R$ 32,00 em 03/10/2025. Categoria: lazer, Banco: Nubank.",
+        "metadata": {
+            "transaction_id": 11,
+            "user_id": 123,
+            "category": "lazer",
+            "bank": "nubank",
+            "amount": -32.00,
+            "date": "2025-10-03"
+        }
+    },
+    {
+        "text": "Corrida de 99 Pop custou R$ 15,50 em 04/10/2025. Categoria: transporte, Banco: Nubank.",
+        "metadata": {
+            "transaction_id": 12,
+            "user_id": 123,
+            "category": "transporte",
+            "bank": "nubank",
+            "amount": -15.50,
+            "date": "2025-10-04"
+        }
+    },
+    {
+        "text": "Assinatura Disney Plus R$ 27,90 cobrada em 28/09/2025. Categoria: assinaturas, Banco: Itaú.",
+        "metadata": {
+            "transaction_id": 13,
+            "user_id": 123,
+            "category": "assinaturas",
+            "bank": "itau",
+            "amount": -27.90,
+            "date": "2025-09-28"
+        }
+    },
+    {
+        "text": "Café da manhã na Padaria Dona Maria R$ 12,50 em 01/10/2025. Categoria: alimentação, Banco: Nubank.",
+        "metadata": {
+            "transaction_id": 14,
+            "user_id": 123,
+            "category": "alimentacao",
+            "bank": "nubank",
+            "amount": -12.50,
+            "date": "2025-10-01"
+        }
+    },
+    {
+        "text": "Transferência PIX para João no valor de R$ 200,00 em 04/10/2025. Categoria: transferência, Banco: Itaú.",
+        "metadata": {
+            "transaction_id": 15,
+            "user_id": 123,
+            "category": "transferencia",
+            "bank": "itau",
+            "amount": -200.00,
+            "date": "2025-10-04"
+        }
+    }
+]

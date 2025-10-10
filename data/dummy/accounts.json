@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "user_id": 123,
+        "bank_name": "Nubank",
+        "account_type": "conta_corrente",
+        "balance": 850.45,
+        "last_updated": "2025-10-04T14:30:00"
+    },
+    {
+        "id": 2,
+        "user_id": 123,
+        "bank_name": "Itaú",
+        "account_type": "conta_corrente",
+        "balance": 3240.80,
+        "last_updated": "2025-10-04T14:30:00"
+    },
+    {
+        "id": 3,
+        "user_id": 123,
+        "bank_name": "Nubank",
+        "account_type": "poupanca",
+        "balance": 1500.00,
+        "last_updated": "2025-10-04T14:30:00"
+    }
+]

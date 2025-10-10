@@ -1,0 +1,62 @@
+[
+    {
+        "id": 1,
+        "user_id": 123,
+        "name": "Netflix",
+        "amount": 25.90,
+        "frequency": "monthly",
+        "next_payment": "2025-11-03",
+        "active": true,
+        "category": "entretenimento"
+    },
+    {
+        "id": 2,
+        "user_id": 123,
+        "name": "Spotify Premium",
+        "amount": 16.90,
+        "frequency": "monthly",
+        "next_payment": "2025-11-03",
+        "active": true,
+        "category": "entretenimento"
+    },
+    {
+        "id": 3,
+        "user_id": 123,
+        "name": "Amazon Prime",
+        "amount": 9.90,
+        "frequency": "monthly",
+        "next_payment": "2025-10-30",
+        "active": true,
+        "category": "entretenimento"
+    },
+    {
+        "id": 4,
+        "user_id": 123,
+        "name": "Disney Plus",
+        "amount": 27.90,
+        "frequency": "monthly",
+        "next_payment": "2025-10-28",
+        "active": true,
+        "category": "entretenimento"
+    },
+    {
+        "id": 5,
+        "user_id": 123,
+        "name": "Gympass",
+        "amount": 39.90,
+        "frequency": "monthly",
+        "next_payment": "2025-11-01",
+        "active": true,
+        "category": "saude"
+    },
+    {
+        "id": 6,
+        "user_id": 123,
+        "name": "Adobe Creative Cloud",
+        "amount": 85.00,
+        "frequency": "monthly",
+        "next_payment": "2025-11-15",
+        "active": false,
+        "category": "profissional"
+    }
+]

@@ -1,0 +1,42 @@
+[
+    {
+        "id": 1,
+        "user_id": 123,
+        "name": "Viagem Disney",
+        "target_amount": 8000.00,
+        "current_amount": 2450.00,
+        "deadline": "2026-01-15",
+        "monthly_goal": 500.00,
+        "status": "active"
+    },
+    {
+        "id": 2,
+        "user_id": 123,
+        "name": "iPhone 16",
+        "target_amount": 5500.00,
+        "current_amount": 1200.00,
+        "deadline": "2025-12-25",
+        "monthly_goal": 800.00,
+        "status": "active"
+    },
+    {
+        "id": 3,
+        "user_id": 123,
+        "name": "Reserva de Emergência",
+        "target_amount": 15000.00,
+        "current_amount": 8500.00,
+        "deadline": "2026-06-30",
+        "monthly_goal": 1000.00,
+        "status": "active"
+    },
+    {
+        "id": 4,
+        "user_id": 123,
+        "name": "Carro Novo",
+        "target_amount": 45000.00,
+        "current_amount": 12000.00,
+        "deadline": "2027-12-31",
+        "monthly_goal": 1500.00,
+        "status": "active"
+    }
+]

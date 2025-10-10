@@ -1,0 +1,152 @@
+[
+    {
+        "id": 1,
+        "user_id": 123,
+        "date": "2025-10-01",
+        "description": "iFood - Burger King",
+        "category": "delivery",
+        "amount": -35.90,
+        "bank": "nubank",
+        "type": "debit"
+    },
+    {
+        "id": 2,
+        "user_id": 123,
+        "date": "2025-10-02",
+        "description": "Uber Eats - McDonald's",
+        "category": "delivery",
+        "amount": -28.50,
+        "bank": "nubank",
+        "type": "debit"
+    },
+    {
+        "id": 3,
+        "user_id": 123,
+        "date": "2025-10-03",
+        "description": "Netflix Assinatura",
+        "category": "assinaturas",
+        "amount": -25.90,
+        "bank": "itau",
+        "type": "subscription"
+    },
+    {
+        "id": 4,
+        "user_id": 123,
+        "date": "2025-10-03",
+        "description": "Spotify Premium",
+        "category": "assinaturas",
+        "amount": -16.90,
+        "bank": "itau",
+        "type": "subscription"
+    },
+    {
+        "id": 5,
+        "user_id": 123,
+        "date": "2025-10-04",
+        "description": "Salário Empresa XYZ",
+        "category": "salario",
+        "amount": 4500.00,
+        "bank": "itau",
+        "type": "credit"
+    },
+    {
+        "id": 6,
+        "user_id": 123,
+        "date": "2025-10-04",
+        "description": "Rappi - Açaí",
+        "category": "delivery",
+        "amount": -22.00,
+        "bank": "nubank",
+        "type": "debit"
+    },
+    {
+        "id": 7,
+        "user_id": 123,
+        "date": "2025-09-30",
+        "description": "Amazon Prime",
+        "category": "assinaturas",
+        "amount": -9.90,
+        "bank": "nubank",
+        "type": "subscription"
+    },
+    {
+        "id": 8,
+        "user_id": 123,
+        "date": "2025-10-01",
+        "description": "Posto Shell - Gasolina",
+        "category": "transporte",
+        "amount": -120.00,
+        "bank": "itau",
+        "type": "debit"
+    },
+    {
+        "id": 9,
+        "user_id": 123,
+        "date": "2025-10-02",
+        "description": "Supermercado Pão de Açúcar",
+        "category": "alimentacao",
+        "amount": -185.30,
+        "bank": "itau",
+        "type": "debit"
+    },
+    {
+        "id": 10,
+        "user_id": 123,
+        "date": "2025-10-02",
+        "description": "Farmácia Droga Raia",
+        "category": "saude",
+        "amount": -45.80,
+        "bank": "nubank",
+        "type": "debit"
+    },
+    {
+        "id": 11,
+        "user_id": 123,
+        "date": "2025-10-03",
+        "description": "Cinema Cinemark",
+        "category": "lazer",
+        "amount": -32.00,
+        "bank": "nubank",
+        "type": "debit"
+    },
+    {
+        "id": 12,
+        "user_id": 123,
+        "date": "2025-10-04",
+        "description": "99 Pop - Corrida",
+        "category": "transporte",
+        "amount": -15.50,
+        "bank": "nubank",
+        "type": "debit"
+    },
+    {
+        "id": 13,
+        "user_id": 123,
+        "date": "2025-09-28",
+        "description": "Disney Plus",
+        "category": "assinaturas",
+        "amount": -27.90,
+        "bank": "itau",
+        "type": "subscription"
+    },
+    {
+        "id": 14,
+        "user_id": 123,
+        "date": "2025-10-01",
+        "description": "Padaria Dona Maria",
+        "category": "alimentacao",
+        "amount": -12.50,
+        "bank": "nubank",
+        "type": "debit"
+    },
+    {
+        "id": 15,
+        "user_id": 123,
+        "date": "2025-10-04",
+        "description": "Transferência PIX - João",
+        "category": "transferencia",
+        "amount": -200.00,
+        "bank": "itau",
+        "type": "transfer"
+    }
+]
