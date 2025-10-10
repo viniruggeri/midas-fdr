@@ -1,5 +1,3 @@
----
-
 # **Midas FDR — Financial Deep Research Engine**
 
 > *Beyond answers. Deep financial intelligence.*
