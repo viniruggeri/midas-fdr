@@ -199,129 +199,121 @@ sequenceDiagram
 
 ---
 
-## 🔄 **Pipeline de Dados**
+## 🔄 **Data Flow**
 
-O fluxo de dados segue o modelo **Event-Driven Sync**, no qual eventos de novas transações ou atualizações no Oracle disparam rotinas de ingestão para as demais camadas.
+FDR v2 uses **direct graph population** — financial transactions are ingested directly into Neo4j, where they form the neuroelastic knowledge graph.
 
-### **Diagrama de Ingestão**
+### **Graph Population Pipeline**
 
 ```mermaid
 flowchart LR
-    A[Oracle<br/>Transaction Created] -->|Event| B[RabbitMQ Queue]
-    B --> C[Python Sync Worker]
+    A[Financial Data<br/>JSON/CSV] --> B[Data Loader]
     
-    C --> D[NER Extractor]
-    C --> E[Embedding Generator]
-    C --> F[Graph Builder]
+    B --> C[Entity Extractor]
+    B --> D[Embedding Generator]
     
-    D -->|Entities| G[(PostgreSQL<br/>NER Store)]
-    E -->|Vectors| H[(PostgreSQL<br/>pgvector)]
-    E -->|Index| I[FAISS Cache]
-    F -->|Relations| J[(Neo4j)]
+    C -->|Nodes| E[(Neo4j<br/>Neuroelastic Graph)]
+    D -->|Properties| E
     
-    G -.->|Feeds| K[GFQR Training]
-    J -.->|Feeds| K
+    E --> F[GNN Training]
+    F --> G[Trained GAT Model]
     
-    style A fill:#F5A623
-    style C fill:#4A90E2
-    style K fill:#BD10E0
+    style E fill:#BD10E0
+    style G fill:#4A90E2
 ```
 
-### **Etapas de Processamento**
+### **Processing Steps**
 
-1. **Ingestão de dados** do Oracle (transações, categorias, metadados).
-2. **Extração de entidades** via modelo NER financeiro (ex: "Uber", "Spotify", "delivery").
-3. **Geração de embeddings** com vetorização contextual.
-4. **Atualização do grafo** no Neo4j, representando relações e padrões emergentes.
-5. **Disponibilização dos dados** para os módulos de *retrieval* do FDR.
+1. **Load transactions** from structured data sources (CSV, JSON, database exports)
+2. **Extract entities** and relationships (merchants, categories, spending patterns)
+3. **Generate embeddings** using SentenceTransformer (all-MiniLM-L6-v2)
+4. **Populate Neo4j** with nodes (transactions) and edges (semantic relationships)
+5. **Train GNN** on the graph structure for inference-time reasoning
+
+**Key Difference from v1:** No event-driven pipeline — v2 focuses on reasoning over existing graph topology.
 
 ---
 
-## 🧩 **Mecanismo FDR**
+## 🧩 **FDR v2 Reasoning Mechanism**
 
-O motor FDR é composto por três *retrievers* independentes e cooperativos:
+The Deep Reasoning Layer combines **graph topology** with **GNN inference** for persistent multi-hop reasoning:
 
-| Retriever                                        | Tipo                       | Função Principal                                        |
-| ------------------------------------------------ | -------------------------- | ------------------------------------------------------- |
-| **Graph RAG**                                    | Consultas Neo4j            | Detecta tendências, relações e padrões temporais.       |
-| **Vectorial RAG**                                | Similaridade vetorial      | Localiza transações semanticamente próximas.            |
-| **GFQR** (*Generative Financial Query Reasoner*) | GNN + Raciocínio simbólico | Executa análises hipotéticas e inferências financeiras. |
+| Component | Technology | Purpose |
+|-----------|-----------|---------|
+| **Neuroelastic Graph** | Neo4j + NetworkX | Persistent context with adaptive connections |
+| **GNN Inference** | PyTorch Geometric (GAT) | Node relevance scoring + confidence |
+| **Multi-hop Reasoner** | Python + NumPy | Iterative traversal with depth control |
+| **Aphelion Layer** | PageRank + Pruning | Self-healing when coherence degrades |
 
-Esses módulos são coordenados por um **Router de LangGraph**, que define dinamicamente o plano de consulta (`retriever_plan`) com base na intenção e complexidade da query.
-
-### **Arquitetura GFQR**
+### **FDR v2 Reasoning Architecture**
 
 ```mermaid
 graph TD
-    A[Query] --> B[Query Encoder]
-    B --> C[Subgraph Extractor]
+    A[User Query] --> B[Intent Classifier]
+    B --> C[Entity Extraction]
     
-    C --> D[(Neo4j)]
-    D --> E[Financial Subgraph]
+    C --> D[Neo4j Subgraph Query]
+    D --> E[Relevant Nodes]
     
-    E --> F[GNN Encoder]
-    F --> G[Node Embeddings]
-    F --> H[Edge Embeddings]
+    E --> F[GNN Inference GAT]
+    F --> G[Node Scores + Confidence]
     
-    B --> I[Query Attention Layer]
-    G --> I
-    H --> I
+    G --> H[Multi-hop Traversal]
+    H --> I[Context Assembly ICE]
     
-    I --> J[Reasoning MLP]
-    J --> K[Multi-hop Inference]
-    J --> L[Numeric Computation]
+    I --> J{Coherence Check<br/>Aphelion}
+    J -->|C < 0.70| K[Graph Reconstruction]
+    J -->|C ≥ 0.70| L[HumanizerLLM]
     
-    K --> M[Answer Decoder]
-    L --> M
-    
-    M --> N[Final Answer + Reasoning Path]
+    K --> F
+    L --> M[Final Response]
     
     style F fill:#BD10E0
-    style J fill:#7ED321
-    style M fill:#4A90E2
+    style J fill:#F5A623
+    style L fill:#7ED321
 ```
 
 ---
 
-## 📊 **Exemplo de Raciocínio FDR**
+## 📊 **FDR v2 Reasoning Example**
 
 **Query:**
 
-> “Por que meus gastos com delivery aumentaram 40% nos últimos 3 meses e quanto eu economizaria se pedisse só aos finais de semana?”
+> "If I stop ordering gnocchi every week, how close would I be to my travel savings goal?"
 
-### **Etapas do Pipeline**
+### **Processing Pipeline**
 
-* **NER:** identifica categorias (“delivery”), períodos (“últimos 3 meses”) e ação (“economizaria”).
-* **Intent Classification:** define o tipo de análise: `trend_analysis + what_if_scenario`.
-* **Retriever Plan:** seleciona `["graph", "vectorial", "gfqr"]`.
-* **Graph RAG:** confirma aumento de 40% nos últimos 3 meses.
-* **Vectorial RAG:** identifica padrão temporal (60% dos pedidos durante a semana).
-* **GFQR:** estima economia hipotética em caso de restrição a finais de semana.
+1. **Intent Classification:** `what_if_scenario` (hypothetical reasoning)
+2. **Entity Extraction:** `["gnocchi", "travel goal", "weekly spending"]`
+3. **Graph Query:** Retrieve all nodes related to "gnocchi" and "savings"
+4. **GNN Inference:** Score node relevance (gnocchi transactions = high score)
+5. **Multi-hop Reasoning:** 
+   - Hop 1: Find gnocchi spending pattern (R$45/week)
+   - Hop 2: Calculate monthly savings (R$180)
+   - Hop 3: Compare to travel goal (R$2,500 target)
+6. **Coherence Check:** C(G) = 0.87 (✓ above threshold)
+7. **Response Generation:** Humanized answer with financial simulation
 
 ---
 
-## 🔍 **Explainability Example**
+## 🔍 **Response with Explainability**
 
-**Resposta Final:**
+**Final Answer:**
 
-> “Seus gastos com delivery aumentaram de R$180 (julho) para R$252 (setembro), um crescimento de 40%.
-> O padrão mostra que 60% dos pedidos ocorrem durante a semana.
-> Se você restringir pedidos apenas aos finais de semana, economizará aproximadamente R$128/mês (R$1.536/ano).”
+> "You currently spend R$45/week on gnocchi (R$180/month). If you stop ordering it, you'd save R$2,160/year.
+> Your travel goal is R$2,500. By cutting gnocchi, you'd be **86% of the way there** in 12 months, or reach it in ~14 months.
+> This assumes no other changes to your spending patterns."
 
-**Traço de Raciocínio (Reasoning Trace):**
+**Reasoning Trace:**
 
-* *Graph RAG → Trend Analysis*
-* *Vectorial RAG → Pattern Detection*
-* *GFQR → Hypothetical Reasoning & Simulation*
+* *Graph Query → Spending Pattern Detection*
+* *GNN Inference → Node Relevance Scoring*
+* *Multi-hop Traversal → Financial Projection*
+* *Aphelion Check → Coherence Validation (C=0.87)*
 
-**Caminho de Recuperação (Retriever Path):**
-
-```
-graph → vectorial → gfqr
-```
-
-**Confiança:** 0.91
-**Latência Média:** ~2.8s
+**Confidence:** 0.89  
+**Latency:** ~450ms  
+**Graph Nodes Used:** 23
 
 ---
 
