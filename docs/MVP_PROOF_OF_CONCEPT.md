@@ -365,7 +365,7 @@ python demo_mvp.py
 **Implementation guides:**
 - [QUICK_START.md](QUICK_START.md) — Setup instructions
 - [CHANGELOG.md](CHANGELOG.md) — Version history
-- [README.md](README.md) — Project overview
+- [../README.md](../README.md) — Project overview
 
 ---
 

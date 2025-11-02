@@ -7,7 +7,7 @@
 [![Neo4j](https://img.shields.io/badge/Neo4j-5.13-green.svg)](https://neo4j.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-**📄 [Whitepaper](whitepaper-fdr.md) | 🚀 [Quick Start](QUICK_START.md) | 📊 [MVP PoC](MVP_PROOF_OF_CONCEPT.md) | 📝 [Changelog](CHANGELOG.md)**
+**📄 [Whitepaper](docs/whitepaper-fdr.md) | 🚀 [Quick Start](docs/QUICK_START.md) | 📊 [MVP PoC](docs/MVP_PROOF_OF_CONCEPT.md) | 📝 [Changelog](docs/CHANGELOG.md) | 📁 [Project Structure](PROJECT_STRUCTURE.md)**
 
 ---
 
@@ -44,7 +44,7 @@ The system introduces a **Deep Reasoning Layer (DRL)** capable of:
 
 ### Automated Setup (Windows)
 ```powershell
-.\setup.ps1
+.\scripts\setup.ps1
 ```
 
 ### Manual Setup
@@ -66,13 +66,13 @@ python -m uvicorn app.main:app --reload --port 8000
 curl -X POST http://localhost:8000/graph/populate
 
 # 6. Train GNN
-python train_gnn.py
+python scripts/train_gnn.py
 
 # 7. Test system
-python demo_mvp.py
+python scripts/demo_mvp.py
 ```
 
-**Full guide:** [QUICK_START.md](QUICK_START.md)
+**Full guide:** [docs/QUICK_START.md](docs/QUICK_START.md)
 
 ---
 

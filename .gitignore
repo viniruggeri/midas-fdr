@@ -51,6 +51,14 @@ logs/
 .pytest_cache/
 .coverage
 htmlcov/
+tests/__pycache__/
+
+# Model checkpoints
+*.pt
+*.pth
+gnn_*.pt
+data/models/
+data/neo4j/
 
 # cx_Oracle docs
 cx_Oracle-doc/

@@ -437,9 +437,9 @@ $$
 ---
 
 **For implementation details, see:**
-- `MVP_PROOF_OF_CONCEPT.md` — Technical proof-of-concept documentation
-- `QUICK_START.md` — Setup and deployment guide
-- `app/cognitive/` — Source code for reasoning engine
+- `../docs/MVP_PROOF_OF_CONCEPT.md` — Technical proof-of-concept documentation
+- `../docs/QUICK_START.md` — Setup and deployment guide
+- `../app/cognitive/` — Source code for reasoning engine
 
 **Contact:**  
 Vinícius Ruggeri — viniruggeri@github  
