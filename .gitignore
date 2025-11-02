@@ -42,6 +42,9 @@ Thumbs.db
 # Data files
 data/faiss_index/*.faiss
 data/tfidf_index/*
+data/neo4j/
+data/databases/
+data/*.db
 
 # Logs
 *.log
