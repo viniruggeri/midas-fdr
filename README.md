@@ -59,13 +59,15 @@ pip install -r requirements.txt
 
 # 3. Configure environment
 cp .env.example .env
-# Edit .env with your OPENAI_API_KEY
+# Edit .env with:
+# - OPENAI_API_KEY
+# - ORACLE_CONNECTION_STRING (MIDAS golden source)
 
 # 4. Start server
 python -m uvicorn app.main:app --reload --port 8000
 
-# 5. Populate graph
-curl -X POST http://localhost:8000/graph/populate
+# 5. Sync from Oracle & Populate graph
+curl -X POST http://localhost:8000/graph/sync-oracle
 
 # 6. Train GNN
 python scripts/train_gnn.py
@@ -73,6 +75,8 @@ python scripts/train_gnn.py
 # 7. Test system
 python scripts/demo_mvp.py
 ```
+
+> **Note:** Oracle DB (MIDAS) is the **golden source**. Neo4j syncs from Oracle for graph reasoning.
 
 **Full guide:** [docs/QUICK_START.md](docs/QUICK_START.md)
 
@@ -111,6 +115,15 @@ Graph Attention Networks (GAT) provide **topological awareness**:
 - GPT/LLM = Semantic interpreter
 - FDR Graph = Contextual memory substrate
 - Reasoning emerges from **topology**, not just embeddings
+
+### 6. Oracle + Neo4j Architecture
+**Hybrid data strategy** for production readiness:
+- **Oracle DB (MIDAS):** Golden source, ACID transactions, financial data integrity
+- **Neo4j:** Reasoning layer, graph topology, GNN inference substrate
+- **Sync Strategy:** ETL pipeline (batch/incremental) from Oracle → Neo4j
+- **Read Pattern:** Queries read from Neo4j graph, writes go to Oracle first
+
+**Why this matters:** Oracle ensures data consistency, Neo4j enables graph reasoning at scale.
 
 ---
 
@@ -201,13 +214,13 @@ sequenceDiagram
 
 ## 🔄 **Data Flow**
 
-FDR v2 uses **direct graph population** — financial transactions are ingested directly into Neo4j, where they form the neuroelastic knowledge graph.
+FDR v2 uses **Oracle DB as golden source** — financial transactions from MIDAS Oracle database are synced to Neo4j to form the neuroelastic knowledge graph.
 
 ### **Graph Population Pipeline**
 
 ```mermaid
 flowchart LR
-    A[Financial Data<br/>JSON/CSV] --> B[Data Loader]
+    A[(Oracle DB<br/>MIDAS Golden Source)] -->|Sync| B[Data Loader]
     
     B --> C[Entity Extractor]
     B --> D[Embedding Generator]
@@ -218,19 +231,21 @@ flowchart LR
     E --> F[GNN Training]
     F --> G[Trained GAT Model]
     
+    style A fill:#F5A623
     style E fill:#BD10E0
     style G fill:#4A90E2
 ```
 
 ### **Processing Steps**
 
-1. **Load transactions** from structured data sources (CSV, JSON, database exports)
-2. **Extract entities** and relationships (merchants, categories, spending patterns)
-3. **Generate embeddings** using SentenceTransformer (all-MiniLM-L6-v2)
-4. **Populate Neo4j** with nodes (transactions) and edges (semantic relationships)
-5. **Train GNN** on the graph structure for inference-time reasoning
+1. **Extract transactions** from Oracle DB (MIDAS golden source)
+2. **Sync to Neo4j** via ETL pipeline (batch or incremental)
+3. **Extract entities** and relationships (merchants, categories, spending patterns)
+4. **Generate embeddings** using SentenceTransformer (all-MiniLM-L6-v2)
+5. **Populate graph** with nodes (transactions) and edges (semantic relationships)
+6. **Train GNN** on the graph structure for inference-time reasoning
 
-**Key Difference from v1:** No event-driven pipeline — v2 focuses on reasoning over existing graph topology.
+**Key Architecture:** Oracle DB remains the **source of truth** — Neo4j acts as the **reasoning layer** with graph topology optimized for GNN inference.
 
 ---
 
@@ -354,7 +369,8 @@ FDR 2 represents the transition from **context compression** to **context evolut
 
 **Technology Stack:**
 ```
-FastAPI + Neo4j + PyTorch Geometric + SentenceTransformers + LangChain
+Oracle DB (Golden Source) + Neo4j (Reasoning Layer) + PyTorch Geometric (GNN)
+FastAPI + SentenceTransformers + LangChain
 ```
 
 ---
