@@ -31,7 +31,9 @@ The system introduces a **Deep Reasoning Layer (DRL)** capable of:
 **Project:** FIAP (Análise e Desenvolvimento de Sistemas) — Sprint 2  
 **Author:** Vinícius Ruggeri  
 **Date:** November 2025  
-**Whitepaper:** [whitepaper-fdr.md](whitepaper-fdr.md)
+**Version:** 2.0.0 (FDR v2 - Deep Reasoning Layer)
+
+> **Note:** This documentation describes **FDR v2** with neuroelastic reasoning and GNN inference. For v1 (basic RAG), see [CHANGELOG.md](docs/CHANGELOG.md).
 
 ---
 
@@ -112,107 +114,88 @@ Graph Attention Networks (GAT) provide **topological awareness**:
 
 ---
 
-## ⚙️ **Architecture Overview**
+## ⚙️ **Architecture Overview (v2)**
 
-### **Diagrama de Arquitetura**
+### **High-Level Architecture**
 
 ```mermaid
 graph TB
-    subgraph Client Layer
-        A[User Query]
+    subgraph User Layer
+        A[Natural Language Query]
     end
     
-    subgraph FDR Engine
-        B[LangGraph Router]
-        B --> C{Intent Classification}
-        C --> D[Complexity Estimator]
-        D --> E[Retriever Planner]
-        
-        E --> F[Graph RAG]
-        E --> G[Vectorial RAG]
-        E --> H[GFQR GNN]
-        
-        F --> I[Weighted Fusion]
-        G --> I
-        H --> I
-        
-        I --> J[Confidence Calibration]
-        J --> K[Response Generator]
+    subgraph Deep Reasoning Layer DRL
+        B[Intent Classifier]
+        B --> C[Multi-hop Reasoner]
+        C --> D[Neuroelastic Graph]
+        D --> E[GNN Inference GAT]
+        E --> F[Aphelion Layer]
+        F --> G[Entropy Regulator]
     end
     
-    subgraph Data Layer
-        L[(Oracle)]
-        M[(PostgreSQL<br/>pgvector)]
-        N[(PostgreSQL<br/>NER Store)]
-        O[(Neo4j<br/>Knowledge Graph)]
-        P[FAISS<br/>In-Memory]
+    subgraph Knowledge Layer
+        H[(Neo4j Graph)]
+        I[SentenceTransformer]
+        J[PyTorch Geometric]
     end
     
-    subgraph Event Pipeline
-        Q[RabbitMQ]
-        R[Sync Worker]
+    subgraph Generation Layer
+        K[GPT-4 / LLM]
+        L[HumanizerLLM]
+        M[ICE Context]
     end
     
-    L -->|CDC Events| Q
-    Q --> R
-    R --> M
-    R --> N
-    R --> O
-    R --> P
-    
-    F --> O
+    A --> B
+    D <--> H
+    E <--> J
     G --> M
-    G --> P
-    H --> O
-    H --> N
+    M --> K
+    K --> L
+    L --> N[Humanized Response]
     
-    K --> S[Final Response]
-    
-    style B fill:#4A90E2
-    style I fill:#7ED321
-    style L fill:#F5A623
-    style O fill:#BD10E0
+    style D fill:#BD10E0
+    style E fill:#4A90E2
+    style F fill:#F5A623
+    style L fill:#7ED321
 ```
 
-### **Fluxo de Dados**
+### **Query Processing Flow**
 
 ```mermaid
 sequenceDiagram
     participant U as User
-    participant R as Router
-    participant GR as Graph RAG
-    participant VR as Vectorial RAG
-    participant GFQR as GFQR GNN
-    participant F as Fusion Layer
+    participant IC as Intent Classifier
+    participant MH as Multi-hop Reasoner
+    participant GNN as GNN Inference
+    participant APH as Aphelion Layer
+    participant LLM as HumanizerLLM
     
-    U->>R: "Quanto economizaria cortando delivery em 50%?"
-    R->>R: Classify Intent (what-if scenario)
-    R->>R: Estimate Complexity (high)
-    R->>R: Plan: [graph, vectorial, gfqr]
+    U->>IC: "If I stop ordering gnocchi, how close to my travel goal?"
+    IC->>IC: Classify: what-if scenario
+    IC->>MH: Extract entities: ["gnocchi", "travel goal"]
     
-    par Parallel Retrieval
-        R->>GR: Extract spending pattern
-        R->>VR: Find similar transactions
-        R->>GFQR: Simulate 50% reduction
-    end
+    MH->>GNN: Query neuroelastic graph
+    GNN->>GNN: GAT inference (node relevance)
+    GNN-->>MH: Top nodes + confidence scores
     
-    GR-->>F: Current avg: R$214/month
-    VR-->>F: 28 delivery transactions
-    GFQR-->>F: Projected savings: R$107/month
+    MH->>MH: Multi-hop traversal (depth=3)
+    MH-->>APH: Check coherence (C=0.82)
+    APH-->>MH: ✓ Above threshold (τ=0.70)
     
-    F->>F: Weight & Merge Results
-    F->>F: Calibrate Confidence (0.87)
-    F->>U: "Economizaria R$107/mês (R$1.284/ano)"
+    MH->>LLM: Assemble ICE context
+    LLM->>LLM: Generate humanized response
+    LLM-->>U: "Você economiza R$120/mês..."
 ```
 
-### **Camadas Principais**
+### **Core Components**
 
-| Camada                 | Tecnologia                | Função                                                                         |
-| ---------------------- | ------------------------- | ------------------------------------------------------------------------------ |
-| **Storage Principal**  | **Oracle**                | Fonte de verdade das transações financeiras.                                   |
-| **Embeddings Store**   | **PostgreSQL (pgvector)** | Armazena representações vetoriais para recuperação semântica eficiente.        |
-| **NER Entities Store** | **PostgreSQL**            | Base dedicada para entidades financeiras extraídas via NER.                    |
-| **Knowledge Graph**    | **Neo4j**                 | Representa relações entre usuários, categorias, períodos e hábitos de consumo. |
+| Component | Technology | Function |
+|-----------|-----------|----------|
+| **Neuroelastic Graph** | Neo4j + NetworkX | Dynamic topology with persistent context |
+| **GNN Inference** | PyTorch Geometric (GAT) | Node relevance + confidence prediction |
+| **Aphelion Layer** | PageRank + Pruning | Semantic survival and reconstruction |
+| **Multi-hop Reasoner** | Python + NumPy | Iterative depth-first search with ICE assembly |
+| **HumanizerLLM** | GPT-4 / Claude | Natural language generation |
 
 ---
 
@@ -342,17 +325,20 @@ graph → vectorial → gfqr
 
 ---
 
-## 🧩 **Principais Diferenciais**
+## 🧩 **FDR v2 vs Traditional RAG**
 
-| Capacidade                   | RAG Tradicional | FDR |
-| ---------------------------- | --------------- | --- |
-| Perguntas factuais simples   | ✅               | ✅   |
-| Análise temporal de gastos   | ⚠️              | ✅   |
-| Correlação entre categorias  | ❌               | ✅   |
-| Cenários “e se...” (what-if) | ❌               | ✅   |
-| Explicabilidade detalhada    | ⚠️              | ✅   |
+| Capability | RAG v1 | FDR v2 | Notes |
+|-----------|--------|--------|-------|
+| Simple queries | ✅ | ✅ | Both handle basic lookup |
+| Pattern detection | ❌ | ✅ | Requires graph topology |
+| Multi-hop reasoning | ❌ | ✅ | GNN-guided traversal |
+| What-if scenarios | ❌ | ✅ | Graph simulation |
+| Context persistence | ❌ | ✅ | Neuroelastic memory |
+| Self-healing | ❌ | ✅ | Aphelion extinction |
+| Semantic coherence | ❌ | ✅ | C(G) monitoring |
+| Explainability | ⚠️ | ✅ | Full reasoning trace |
 
-O **Midas FDR** amplia o raciocínio de IA para além da recuperação de contexto — entregando **inteligência financeira explicável e preditiva**.
+**Key Innovation:** FDR v2 doesn't just retrieve — it **reasons persistently** across a living knowledge graph.
 
 ---
 

@@ -141,12 +141,31 @@ This release introduces a complete paradigm shift from traditional RAG to **pers
 
 ## [1.0.0] - 2025-10-15
 
-### Initial Release
+### Initial Release: FDR v1 (RAG Tradicional)
 
-- Basic RAG implementation with FastAPI
-- Neo4j integration for transaction storage
-- Simple query processing
-- HumanizerLLM for response generation
+**Architecture:**
+- Basic RAG pipeline (Retrieval-Augmented Generation)
+- Single-retriever approach (vector similarity only)
+- Session-based context (no persistence)
+- Static Oracle → PostgreSQL sync
+
+**Components:**
+- ✅ FastAPI REST API
+- ✅ Neo4j for transaction storage
+- ✅ Basic query processing (keyword + embedding)
+- ✅ HumanizerLLM for response generation
+- ✅ Oracle integration (read-only)
+
+**Limitations:**
+- ❌ No multi-hop reasoning
+- ❌ No pattern detection
+- ❌ No what-if scenarios
+- ❌ Context lost after session
+- ❌ No semantic coherence tracking
+
+**Performance:**
+- Simple queries: ~200ms
+- Coverage: Basic transaction lookup only
 
 ---
 
