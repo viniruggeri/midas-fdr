@@ -383,7 +383,7 @@ This project demonstrates:
 
 ## 📄 **License**
 
-MIT License — See [LICENSE](LICENSE) for details
+MIDAS License — See [LICENSE](LICENSE) for details
 
 ---
 
