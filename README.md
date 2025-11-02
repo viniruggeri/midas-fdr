@@ -1,21 +1,118 @@
-# **Midas FDR — Financial Deep Research Engine**
+# **MIDAS FDR 2 — Financial Deep Reasoning**
 
-> *Beyond answers. Deep financial intelligence.*
+> *Beyond retrieval. Persistent inferential reasoning.*
+
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.1+-red.svg)](https://pytorch.org/)
+[![Neo4j](https://img.shields.io/badge/Neo4j-5.13-green.svg)](https://neo4j.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+**📄 [Whitepaper](whitepaper-fdr.md) | 🚀 [Quick Start](QUICK_START.md) | 📊 [MVP PoC](MVP_PROOF_OF_CONCEPT.md) | 📝 [Changelog](CHANGELOG.md)**
 
 ---
 
 ## 🧠 **Overview**
 
-O **Midas FDR (Financial Deep Research Engine)** é a nova camada de inteligência analítica do projeto **Midas**, desenvolvida para expandir as capacidades do motor de RAG tradicional.
-O FDR integra raciocínio simbólico, busca multimodal e análise de padrões financeiros com arquitetura distribuída e explicável.
+**MIDAS FDR 2 (Financial Deep Reasoning)** is a neuroelastic cognitive framework for persistent inferential reasoning based on dynamic topological graphs.
 
-Enquanto um RAG simples responde perguntas diretas sobre transações, o FDR executa *reasoning pipelines* compostos, capazes de interpretar tendências, relações contextuais e cenários hipotéticos — como “quanto eu economizaria se alterasse meu padrão de consumo”.
+Unlike traditional RAG (Retrieval-Augmented Generation) systems that rely on static embeddings, **FDR 2 maintains neuroelastic contextual persistence** — allowing reasoning to evolve without loss of semantic coherence.
+
+The system introduces a **Deep Reasoning Layer (DRL)** capable of:
+- 🔗 **Persistent context** through graph topology
+- 🧬 **Neuroelastic adaptation** inspired by biological neuroplasticity
+- 🌊 **Multi-hop reasoning** with GNN-enhanced inference
+- 🔄 **Self-healing** via Aphelion Layer (extinction/rebirth cycles)
+- 💭 **What-if scenarios** with financial simulation
+
+**Key Innovation:** The system does not summarize — it **thinks inferentially**.
+
+### Academic Context
+
+**Project:** FIAP (Análise e Desenvolvimento de Sistemas) — Sprint 2  
+**Author:** Vinícius Ruggeri  
+**Date:** November 2025  
+**Whitepaper:** [whitepaper-fdr.md](whitepaper-fdr.md)
 
 ---
 
-## ⚙️ **Arquitetura Geral**
+## 🚀 **Quick Start**
 
-O FDR adota uma **arquitetura multi-camada e multi-banco**, desenhada para combinar dados estruturados, embeddings e grafos de conhecimento.
+### Prerequisites
+- Docker Desktop (for Neo4j)
+- Python 3.10+
+- 8GB RAM minimum
+
+### Automated Setup (Windows)
+```powershell
+.\setup.ps1
+```
+
+### Manual Setup
+```bash
+# 1. Start Neo4j
+docker-compose up -d
+
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. Configure environment
+cp .env.example .env
+# Edit .env with your OPENAI_API_KEY
+
+# 4. Start server
+python -m uvicorn app.main:app --reload --port 8000
+
+# 5. Populate graph
+curl -X POST http://localhost:8000/graph/populate
+
+# 6. Train GNN
+python train_gnn.py
+
+# 7. Test system
+python demo_mvp.py
+```
+
+**Full guide:** [QUICK_START.md](QUICK_START.md)
+
+---
+
+## 🔬 **Core Concepts**
+
+### 1. Neuroelastic Reasoning
+Inspired by biological neuroplasticity, FDR 2 maintains **adaptive connections** between contexts:
+- Connections **expand**, **retract**, or **reconfigure** based on semantic flow
+- New contexts don't overwrite — they **realign** through elastic re-weighting
+- Preserves **persistent meaning** while remaining **adaptively plastic**
+
+### 2. Persistent Inferential Graphs
+Each node = tokenized context | Each edge = active inference
+
+```
+Traditional RAG: Query → Embed → Retrieve → Generate → Forget
+FDR 2:          Query → Graph → Reason → Generate → Persist
+```
+
+### 3. Aphelion Layer (Semantic Survival)
+When global coherence collapses, the system undergoes **controlled extinction and rebirth**:
+- Extract core concepts via PageRank
+- Prune low-relevance nodes
+- Reconstruct graph from latent backups
+
+### 4. GNN-Enhanced Multi-hop Reasoning
+Graph Attention Networks (GAT) provide **topological awareness**:
+- Node relevance scoring
+- Multi-hop path discovery
+- Confidence calibration based on graph structure
+
+### 5. raRg Paradigm
+**Retrieval-Augmented Reasoning Generation** (not just retrieval):
+- GPT/LLM = Semantic interpreter
+- FDR Graph = Contextual memory substrate
+- Reasoning emerges from **topology**, not just embeddings
+
+---
+
+## ⚙️ **Architecture Overview**
 
 ### **Diagrama de Arquitetura**
 
@@ -261,8 +358,55 @@ O **Midas FDR** amplia o raciocínio de IA para além da recuperação de contex
 
 ## 📘 **Resumo Conceitual**
 
-O FDR representa a transição do *retrieval-based reasoning* para o **deep contextual reasoning**, em que dados financeiros são entendidos como um sistema dinâmico de relações e intenções humanas.
+FDR 2 represents the transition from **context compression** to **context evolution** — a shift toward synthetic intelligence where reasoning itself becomes a dynamic, adaptive structure.
 
-> “Enquanto o RAG responde, o FDR entende.”
+> "Enquanto o RAG responde, o FDR pensa."
 
 ---
+
+## 📊 **Project Stats**
+
+- **Code:** ~2,687 lines of Python
+- **Architecture:** 4 core cognitive modules
+- **Documentation:** 5 comprehensive guides
+- **Training:** 15 epochs, ~2-3 min CPU
+- **Model:** GAT-based GNN, ~50k parameters, 200KB
+- **Performance:** 100-1000ms per query
+- **Coverage:** Simple queries, pattern detection, what-if scenarios
+
+**Technology Stack:**
+```
+FastAPI + Neo4j + PyTorch Geometric + SentenceTransformers + LangChain
+```
+
+---
+
+## 🎓 **Academic Impact**
+
+This project demonstrates:
+- ✅ Advanced system architecture (multi-layer, distributed)
+- ✅ Custom ML implementation (GNN from scratch)
+- ✅ Novel theoretical framework (neuroelasticity, Aphelion Layer)
+- ✅ Production-ready engineering (Docker, async, error handling)
+- ✅ Comprehensive documentation (whitepaper, guides, changelog)
+
+**Sprint 2 Deliverable:** ✅ Complete MVP with demonstrable AI/ML reasoning
+
+---
+
+## 📬 **Contact**
+
+**Author:** Vinícius Ruggeri  
+**GitHub:** [@viniruggeri](https://github.com/viniruggeri)  
+**Project:** [midas-fdr](https://github.com/viniruggeri/midas-fdr)  
+**Institution:** FIAP — Análise e Desenvolvimento de Sistemas
+
+---
+
+## 📄 **License**
+
+MIT License — See [LICENSE](LICENSE) for details
+
+---
+
+**Built with ❤️ for the future of cognitive architectures**

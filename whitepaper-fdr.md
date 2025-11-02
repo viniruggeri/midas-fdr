@@ -1,441 +1,449 @@
-# MIDAS FDR - Financial Deep Research Engine
+# MIDAS FDR 2: Deep Reasoning Layer for Persistent Inferential Graphs
 
-## Resumo Executivo
-
-**Projeto:** Midas AI - Financial Deep Research  
-**Contexto:** Projeto acadêmico FIAP (Análise e Desenvolvimento de Sistemas)  
-**Data:** Outubro 2025
+**A Neuroelastic Framework for Topological and Contextual Reasoning**
 
 ---
 
-## Visão Geral
-
-O **FDR (Financial Deep Research)** é uma evolução do sistema RAG tradicional do Midas, implementando uma arquitetura multi-retriever para responder queries financeiras que exigem análise de padrões e raciocínio sobre múltiplas transações.
-
----
-
-## 🏗️ Arquitetura de Alto Nível
-
-```
-                    ┌─────────────────────────────┐
-                    │   LangGraph Orchestrator    │
-                    │   (Intent + Complexity)     │
-                    └──────────┬──────────────────┘
-                               │
-              ┌────────────────┼────────────────┐
-              ▼                ▼                ▼
-      ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
-      │  Vectorial   │  │  Graph RAG   │  │    GFQR      │
-      │     RAG      │  │   (Neo4j)    │  │  (GNN-based) │
-      │ FAISS/pgvec  │  │              │  │              │
-      └──────────────┘  └──────────────┘  └──────────────┘
-              │                ▼                │
-              └────────────────┼────────────────┘
-                               ▼
-                    ┌──────────────────────┐
-                    │  Weighted Fusion +   │
-                    │  Multi-hop Reasoning │
-                    └──────────────────────┘
-```
+**Author:** Vinícius Ruggeri  
+**Affiliation:** Independent Researcher — FDR Project | FIAP (Análise e Desenvolvimento de Sistemas)  
+**Date:** November 2025  
+**Version:** 2.0
 
 ---
 
-## 🧠 Os 3 Retrievers Especializados
+## Abstract
 
-### 1. **Vectorial RAG** (Busca Semântica Tradicional)
+This paper introduces **MIDAS FDR 2 (Financial Deep Reasoning)**, a cognitive framework for persistent inferential reasoning based on dynamic topological graphs.
 
-**Quando usar:** Queries simples de lookup
-- *"Quanto gastei com Uber mês passado?"*
-- *"Qual meu saldo atual?"*
+Unlike traditional RAG (Retrieval-Augmented Generation) or transformer-based approaches that rely on static embeddings, **FDR 2 maintains neuroelastic contextual persistence**, allowing reasoning to evolve without loss of coherence.
 
-**Stack:**
-- FAISS (in-memory, low latency)
-- PostgreSQL + pgvector (persistent storage)
-- OpenAI embeddings (text-embedding-3-large)
+The model introduces the concept of a **Deep Reasoning Layer (DRL)** — a structure capable of preserving semantic continuity and adaptive inference through neuroelastic graph topologies.
 
-**Performance:** ~200-500ms
+Applications extend from financial analytics to cognitive architectures and multi-hop reasoning systems.
 
 ---
 
-### 2. **Graph RAG** (Análise de Padrões e Relações)
+## 1. Core Principle: Persistent Inferential Reasoning
 
-**Quando usar:** Queries de tendência, padrões temporais, correlações
-- *"Meus gastos com delivery estão aumentando?"*
-- *"Qual a relação entre transporte e horários?"*
+FDR 2 is founded on **persistent inferential reasoning in dynamic topological graphs**.
 
-**Stack:**
-- Neo4j (knowledge graph)
-- Cypher queries dinâmicas
-- PostgreSQL NER store (entidades extraídas)
+- Each **node** represents a tokenized context
+- Each **edge** represents active inference
+- The graph **adapts** to maintain semantic continuity as reasoning evolves
 
-**Capacidades:**
-- Detecção de padrões recorrentes
-- Análise de co-ocorrências (ex: "Uber depois de bar")
-- Temporal reasoning ("todo dia 15 é cobrado X")
-- Graph traversal multi-hop
-
-**Performance:** ~300-800ms
-
-**Schema Neo4j:**
-```cypher
-(:Transaction)-[:FROM_MERCHANT]->(:Merchant)
-(:Transaction)-[:BELONGS_TO]->(:Category)
-(:Transaction)-[:SIMILAR_TO {score}]->(:Transaction)
-(:Subscription)-[:IMPACTS]->(:Goal)
-(:Pattern {type, frequency, confidence})
-```
+**Key Idea:** The system does not summarize — it **thinks inferentially**.
 
 ---
 
-### 3. **GFQR - Graph-based Financial Query Reasoning** (O Diferencial!)
+## 2. Neuroelasticity
 
-**O que é:**
-Sistema de raciocínio ML-based que combina:
-- **GNN (Graph Neural Networks)** para entender estrutura do grafo financeiro
-- **Multi-hop reasoning** para inferências complexas
-- **What-if scenarios** com cálculos financeiros
+**Neuroelasticity** is an adaptation of biological neuroplasticity to computational reasoning.
 
-**Quando usar:** Queries que exigem raciocínio causal
-- *"Se eu cancelar Netflix e Spotify, quanto sobra pra investir?"*
-- *"Por que minha conta fica negativa todo dia 20?"*
-- *"Qual o impacto de reduzir delivery em 50%?"*
+Connections:
+- **Expand**, **retract**, or **reconfigure** depending on semantic flow and temporal relevance
+- New contexts do not overwrite old ones; they are **realigned through elastic re-weighting**
 
-**Arquitetura GFQR:**
-```python
-Query → Query Embedding
-  ↓
-Subgraph Extraction (Neo4j)
-  ↓
-GNN Encoder (PyTorch Geometric)
-  ├─ Node embeddings (transactions, merchants, categories)
-  ├─ Edge embeddings (relations)
-  └─ Graph attention layers
-  ↓
-Reasoning Head (Transformer-based)
-  ├─ Multi-hop inference
-  ├─ Causal detection
-  └─ Numeric computation
-  ↓
-Final Answer + Reasoning Path
-```
-
-**Exemplo de Reasoning Path:**
-```
-Query: "Se cancelar Spotify (R$21,90) + Netflix (R$55,90), 
-        quanto sobra para meta de viagem?"
-
-GFQR Steps:
-1. [Extraction] Identifica nós: Spotify, Netflix, Goal:Viagem
-2. [Computation] savings = 21.90 + 55.90 = 77.80/mês
-3. [Graph Query] Goal:Viagem precisa de R$3.000 em 12 meses
-4. [Reasoning] 77.80 * 12 = 933.60 → contribui 31% da meta
-5. [Output] "Cancelando essas assinaturas, você economiza R$933,60/ano,
-             cobrindo 31% da sua meta de viagem (faltariam R$2.066,40)"
-```
-
-**Performance:** ~500-1500ms (GNN inference)
-
-**Stack Técnico:**
-- **PyTorch Geometric** (GNN framework)
-- **Ray** (distributed inference para produção)
-- **Custom financial reasoning layer** (domain-specific rules)
+This enables the network to preserve **persistent meaning** while remaining **adaptively plastic**.
 
 ---
 
-## 🗄️ Arquitetura de Dados (Multi-Database)
+## 3. Token Logic and Topology
 
-### **Oracle** (Source of Truth)
-- Transações, contas, metas, assinaturas
-- Dados transacionais puros
+- Each token exists as a **vectorized node**
+- Reasoning is modeled as **topological flow** — context propagation through edges
+- The system builds **coherent inferential surfaces** where interactions converge
 
-### **PostgreSQL #1** (Embeddings Store)
-```sql
-CREATE EXTENSION vector;
-
-CREATE TABLE transaction_embeddings (
-  transaction_id VARCHAR(36) PRIMARY KEY,
-  embedding VECTOR(1536),
-  metadata JSONB
-);
-
-CREATE INDEX ON transaction_embeddings 
-USING ivfflat (embedding vector_cosine_ops);
-```
-
-### **PostgreSQL #2** (NER Entities Store)
-```sql
-CREATE TABLE financial_entities (
-  id UUID PRIMARY KEY,
-  transaction_id VARCHAR(36),
-  entity_type VARCHAR(50),
-  entity_value TEXT,
-  confidence_score FLOAT
-);
-
-CREATE TABLE entity_relations (
-  entity_1_id UUID,
-  entity_2_id UUID,
-  relation_type VARCHAR(50),
-  frequency INTEGER
-);
-```
-
-### **Neo4j** (Knowledge Graph)
-- Nós: Transaction, Merchant, Category, Pattern, Subscription, Goal
-- Edges: FROM_MERCHANT, BELONGS_TO, SIMILAR_TO, IMPACTS, PART_OF_PATTERN
-
-### **FAISS** (In-Memory Cache)
-- Índice vetorial para low-latency retrieval
-- Rebuild diário ou incremental
+**Inferential Equilibria:**  
+Opposing contexts (e.g., `x = -1`, `y = 1`) generate inferential equilibria — states of **balanced reasoning** where contradiction resolves into **synthesis**.
 
 ---
 
-## 🔄 Pipeline de Ingestão Event-Driven
+## 4. Topological Anomalies
+
+Anomalies are handled by **contextual clustering**.
+
+The system applies K-Means or similar unsupervised grouping to:
+- Detect semantically close nodes
+- Reassign noisy contexts
+- Prevent **contextual collapse** when disruptive ideas appear
+
+This eliminates local incoherences and maintains global semantic integrity.
+
+---
+
+## 5. Integration with GPT / RAG
+
+Traditional RAG pipelines focus on retrieval.  
+**FDR redefines this as raRg** — **Retrieval-Augmented Reasoning Generation**.
+
+Here:
+- **GPT (or any LLM)** acts as the high-level reasoning engine
+- **FDR** provides the inferential graph as contextual substrate
+- Embeddings serve as **anchors**, while reasoning emerges from **graph topology**
+
+**Division of Labor:**
+- **GPT ≈ Semantic interpreter**
+- **FDR ≈ Contextual memory and reasoning substrate**
+
+---
+
+## 6. Cognitive Compression
+
+FDR prioritizes **coherence over concision**.
+
+Instead of summarizing, it maintains **semantic density** — ensuring thoughts evolve consistently rather than being reduced.
+
+This allows **synthetic cognition**: the model learns and reasons rather than merely compressing input.
+
+---
+
+## 7. Derivative Control and Entropy Regulation
+
+A **probabilistic derivative function** regulates the growth of contextual nodes.
+
+It controls **contextual entropy** — ensuring older messages retain influence according to **relevance, not recency**.
+
+**Entropy normalization** maintains stability in reasoning, allowing multi-hop inference without exponential drift.
+
+---
+
+## 8. Sparse Reconstruction
+
+Using **sparse matrices** and **recall reconstruction**, the model rebuilds lost contexts.
+
+Micro-failures in edge connections simulate **cognitive interruptions**, corrected through adaptive recall mechanisms.
+
+This mirrors human re-interpretation after partial memory loss.
+
+---
+
+## 9. CNN + Attention (Reduced Scale)
+
+Local context patterns are processed via **lightweight CNNs**, while **Attention Layers** act on localized subgraphs.
+
+This hybrid enables **deep reasoning with computational efficiency**.
+
+An **Isolation Forest** detects anomalous nodes, which are reinterpreted via non-linear regression — ensuring each conversation branch remains semantically self-contained.
+
+---
+
+## 10. Autoencoder and ReLU Dynamics
+
+A **multi-hop autoencoder** compresses and reconstructs inferential pathways.
+
+**ReLU (or variant)** defines activation thresholds for node connectivity — controlling expansion and pruning in reasoning.
+
+This prevents runaway connections while preserving essential inferential continuity.
+
+---
+
+## 11. Aphelion Layer — Contextual Survival
+
+The **Aphelion Layer** replaces ReLU with a **semantic survival function**.
+
+When global context collapses, the system undergoes **controlled extinction and rebirth** — reinitializing the graph using latent backups.
+
+**Mathematical Formalization:**
+
+$$
+C(G) = \frac{1}{|E|} \sum_{(i,j) \in E} \cos(h_i, h_j)
+$$
+
+Where:
+- $C(G)$ is the semantic coherence of graph $G$
+- $h_i, h_j$ are node embeddings
+- Extinction triggers when $C(G_t) < \tau_{survival}$ for $k$ consecutive checks
+
+**Reconstruction:**
+
+$$
+G_{t+1} = \text{Reconstruct}(\text{Core}(G_t))
+$$
+
+Core concepts are extracted via **PageRank** with weighted edges, simulating **mass extinction-like resets** that embed resilience and adaptive regeneration into reasoning.
+
+---
+
+## 12. Practical Application
+
+The applied prototype is a **financial reasoning agent** that can simulate **"what-if" scenarios**.
+
+**Example:**
+- *"How much did I spend on iFood last week?"*
+- *"If I stop ordering gnocchi, how much closer am I to my travel goal?"*
+
+**Pipeline:**
 
 ```
-Oracle (nova transação)
-    ↓ (RabbitMQ event)
-Python FDR Worker
-    ├─ Gera embedding → Postgres #1
-    ├─ Extrai entidades NER → Postgres #2
-    ├─ Atualiza grafo → Neo4j
-    └─ Atualiza índice → FAISS
+RAG → Reasoning → Generation
 ```
 
-**Async, idempotente, resiliente**
+Producing **humanized explanations** grounded in inferential reasoning and contextual simulation.
 
 ---
 
-## 🎭 Orchestração com LangGraph
+## 13. Stack Recommendation
 
-```python
-class FDROrchestrator(StateGraph):
-    def __init__(self):
-        self.add_node("analyze_query")
-        self.add_node("route_retrievers")
-        self.add_node("vectorial_rag")
-        self.add_node("graph_rag")
-        self.add_node("gfqr_reasoning")
-        self.add_node("fuse_results")
-        self.add_node("verify_quality")
-        
-        self.add_conditional_edges(
-            "route_retrievers",
-            self.should_use_retriever,
-            {
-                "vectorial": "vectorial_rag",
-                "graph": "graph_rag",
-                "gfqr": "gfqr_reasoning",
-                "all": "vectorial_rag"
-            }
-        )
-        
-        self.add_conditional_edges(
-            "verify_quality",
-            lambda state: "refine" if state["confidence"] < 0.7 else "done"
-        )
-```
-
-**Decision Logic:**
-- Query simples (complexity < 0.3) → **Vectorial** apenas
-- Trend analysis → **Graph RAG**
-- What-if scenarios → **GFQR**
-- Queries complexas → **All 3** em paralelo
+| Layer | Recommended Tools | Notes |
+|-------|-------------------|-------|
+| **Graph Core** | NetworkX, PyTorch Geometric | Neuroelastic topology management |
+| **Embedding Layer** | SentenceTransformers, OpenAI Embeddings | Vectorized nodes |
+| **Reasoning Layer (DRL)** | LangGraph, LangChain, NumPy | Multi-hop reasoning orchestration |
+| **Entropy Control / Math Core** | SciPy, SymPy, torch.autograd | Derivative-based entropy management |
+| **Persistence / Store** | ChromaDB, Neo4j, Milvus | Long-term context memory |
+| **Interface / API** | FastAPI, Gradio, Streamlit | Interactive layer |
+| **LLM Integration** | OpenAI GPT, Claude, Phi-4 | High-level semantic reasoning |
 
 ---
 
-## Comparação com RAG Tradicional
+## 14. FDR 2 Architecture Overview
 
-| Capability | RAG Atual | FDR | Observação |
-|------------|-----------|-----|------------|
-| Lookup simples | 200ms | 200ms | Sem mudança |
-| Trend analysis | Limitado | Suportado | Via Graph RAG |
-| Pattern detection | Não suporta | Suportado | Via Neo4j |
-| What-if scenarios | Não suporta | Suportado | Via GFQR |
-| Multi-hop queries | Falha | Suportado | Via GNN |
-| Latência média | 250ms | ~1.5s | Trade-off aceitável |
-
----
-
-## Métricas Esperadas
-
-### Performance
-- Latência P95: < 3s
-- Latência média: ~1.5s
-- Cache hit rate: > 60%
-
-### Qualidade
-- F1-score alvo: 0.80+ (baseline atual: 0.72)
-- Cobertura de queries complexas: 70%+
-- Confidence calibration (ECE): < 0.15
-
-### Utilização Estimada
-- Vectorial RAG: ~90% das queries (fast path)
-- Graph RAG: ~30% das queries (padrões)
-- GFQR: ~10% das queries (raciocínio complexo)
-
----
-
-## GFQR - Graph-based Financial Query Reasoning
-
-### Objetivo
-RAG tradicional recupera informação similar mas não raciocina sobre ela. O GFQR adiciona uma camada de raciocínio usando Graph Neural Networks para:
-
-1. Queries causais ("Por que X aconteceu?")
-2. Cenários hipotéticos ("E se eu fizesse Y?")
-3. Cálculos financeiros multi-hop
-4. Inferências sobre padrões de comportamento
-
-### **Arquitetura GNN:**
-```python
-class FinancialReasoningGNN(torch.nn.Module):
-    def __init__(self):
-        self.node_encoder = nn.Linear(feature_dim, hidden_dim)
-        self.edge_encoder = nn.Linear(edge_dim, hidden_dim)
-        
-        self.conv1 = GCNConv(hidden_dim, hidden_dim)
-        self.conv2 = GATConv(hidden_dim, hidden_dim, heads=4)
-        self.conv3 = GraphConv(hidden_dim, hidden_dim)
-        
-        self.query_attention = MultiHeadAttention(hidden_dim, num_heads=8)
-        
-        self.reasoning_mlp = nn.Sequential(
-            nn.Linear(hidden_dim, hidden_dim * 2),
-            nn.ReLU(),
-            nn.Dropout(0.3),
-            nn.Linear(hidden_dim * 2, reasoning_dim)
-        )
-        
-        self.answer_decoder = nn.Linear(reasoning_dim, vocab_size)
+```mermaid
+graph TB
+    subgraph User Layer
+        A[Natural Language Query]
+    end
     
-    def forward(self, graph_data, query_embedding):
-        x, edge_index = graph_data.x, graph_data.edge_index
-        
-        x = self.node_encoder(x)
-        x = F.relu(self.conv1(x, edge_index))
-        x = F.relu(self.conv2(x, edge_index))
-        x = self.conv3(x, edge_index)
-        
-        x = self.query_attention(x, query_embedding)
-        reasoning_repr = self.reasoning_mlp(x)
-        answer = self.answer_decoder(reasoning_repr)
-        
-        return answer, reasoning_repr
-```
-
-### **Training Data:**
-```python
-examples = [
-    {
-        "query": "Se cancelar Spotify, quanto sobra?",
-        "graph": subgraph_spotify_user_123,
-        "ground_truth_answer": "R$21,90/mês, R$262,80/ano",
-        "reasoning_path": ["extract_subscription", "compute_savings", "format_answer"]
-    }
-]
-```
-
-### **Inference Example:**
-```python
-query = "Qual o impacto de cortar 50% dos gastos com delivery?"
-
-subgraph = neo4j.extract_subgraph(
-    user_id=123,
-    entities=["delivery"],
-    hops=2
-)
-
-with torch.no_grad():
-    query_emb = query_encoder.encode(query)
-    answer, reasoning = gfqr_model(subgraph, query_emb)
-
-decoded = answer_decoder.decode(answer)
-```
-
-**Output:**
-```json
-{
-    "answer": "Você gasta R$214/mês com delivery. Reduzindo 50%, economiza R$107/mês 
-               ou R$1.284/ano. Isso representaria 12% da sua renda mensal.",
-    "confidence": 0.89,
-    "reasoning_path": [
-        "Computed current delivery spend: R$214/mês",
-        "Calculated 50% reduction: R$107 savings",
-        "Annualized savings: R$1.284",
-        "Compared to monthly income (R$900): 12% impact"
-    ]
-}
+    subgraph Deep Reasoning Layer DRL
+        B[Intent Classifier]
+        B --> C[Multi-hop Reasoner]
+        C --> D[Neuroelastic Graph]
+        D --> E[GNN Inference]
+        E --> F[Aphelion Layer]
+        F --> G[Entropy Regulator]
+    end
+    
+    subgraph Knowledge Layer
+        H[(Neo4j Graph)]
+        I[SentenceTransformer Embeddings]
+        J[PyTorch Geometric GAT]
+    end
+    
+    subgraph Generation Layer
+        K[GPT-4 / Claude]
+        L[HumanizerLLM]
+        M[ICE Context Assembler]
+    end
+    
+    A --> B
+    D <--> H
+    E <--> J
+    G --> M
+    M --> K
+    K --> L
+    L --> N[Humanized Response]
 ```
 
 ---
 
-## Custos Estimados
+## 15. Implementation: FDR 2 MVP
 
-### Fase de Desenvolvimento (Academic)
-- Neo4j Community Edition: Gratuito
-- PostgreSQL self-hosted: Gratuito
-- PyTorch + PyTorch Geometric: Open source
-- LangGraph: Open source
-- FAISS: Open source
-- GPU training (Colab Pro): ~R$50/mês
+The current implementation is a **proof-of-concept** demonstrating core FDR 2 principles:
 
-**Total desenvolvimento:** R$50-100/mês
+### Components Implemented
 
-### Produção (estimativa futura)
-- Neo4j managed: ~$300/mês (starter)
-- PostgreSQL managed: ~$200/mês
-- GPU inference: ~$150/mês (shared)
-- Infraestrutura: ~$100/mês
+**1. Neuroelastic Graph (Neo4j + PyTorch Geometric)**
+- Dynamic graph structure with transactions, merchants, categories
+- GAT (Graph Attention Networks) for node relevance scoring
+- Hybrid Cypher + GNN query refinement
 
-**Total produção:** ~$750/mês (viável para MVP)
+**2. Aphelion Layer**
+- Semantic coherence calculation: $C(G) = \frac{1}{|E|} \sum \cos(h_i, h_j)$
+- Extinction cycle with core concept preservation (PageRank)
+- Automated reconstruction after contextual collapse
+
+**3. Multi-hop Reasoning Engine**
+- Iterative depth-first search with confidence scoring
+- GNN-enhanced relevance boosting (0.75 → 0.97 confidence)
+- ICE (Instruction-Context-Examples) assembly
+
+**4. HumanizerLLM Integration**
+- GPT-4 as semantic interpreter
+- FDR graph as reasoning substrate
+- Natural language generation from inferential paths
+
+### Performance Metrics
+
+| Operation | Latency | Notes |
+|-----------|---------|-------|
+| Simple query (direct lookup) | ~100-200ms | Cypher only |
+| Pattern detection | ~300-500ms | Multi-hop traversal |
+| GNN-enhanced reasoning | ~500-1000ms | Includes inference |
+| What-if scenario | ~800-1500ms | Simulated graph modification |
+| Training (15 epochs) | ~2-3 min (CPU) | 20-30s on GPU |
+
+### Hardware Requirements
+
+**Minimum (Development):**
+- CPU: Intel i5 / Ryzen 5
+- RAM: 8GB
+- Disk: 2GB free
+- GPU: None (CPU inference)
+
+**Recommended (Production):**
+- CPU: Intel i7 / Ryzen 7
+- RAM: 16GB+
+- Disk: 10GB+ SSD
+- GPU: GTX 1650+ (optional, 4x speedup)
+
+### Example Query Flow
+
+**Query:** *"If I stop ordering gnocchi on iFood, how much closer am I to my travel goal?"*
+
+**FDR 2 Processing:**
+
+1. **Intent Classification** → "what-if scenario"
+2. **Entity Extraction** → ["gnocchi", "iFood", "travel goal"]
+3. **Graph Query** → Fetch related transactions
+4. **GNN Inference** → Rank node relevance
+5. **Multi-hop Reasoning:**
+   - Find all iFood transactions with "gnocchi"
+   - Calculate average monthly spend
+   - Locate "travel goal" node
+   - Compute gap reduction percentage
+6. **Aphelion Check** → Coherence maintained (C=0.82)
+7. **Response Generation** → Humanized explanation
+
+**Output:**  
+*"Você gasta cerca de R$120/mês com gnocchi no iFood. Cortando isso, em 6 meses você economiza R$720 — cerca de 24% da sua meta de viagem de R$3.000. Combinado com seus outros ajustes, você chegaria lá em 8 meses em vez de 12."*
 
 ---
 
-## Roadmap de Implementação
+## 16. Comparison: FDR 2 vs Traditional Approaches
 
-### Sprint 2 (próximas 2 semanas)
-- Setup Neo4j Community Edition
-- Implementar pipeline de ingestão Oracle → Neo4j
-- Criar GraphRAGRetriever básico
-- LangGraph orchestrator (versão inicial)
-
-### Sprint 3 (semanas 3-4)
-- PostgreSQL NER store
-- Fine-tuning do modelo NER para entidades financeiras
-- Treinamento inicial do GFQR GNN
-- Integração dos 3 retrievers
-
-### Sprint 4 (semanas 5-6)
-- Otimização de pesos do fusion
-- Testes end-to-end
-- Calibração de confiança
-- Documentação final
+| Feature | RAG | LangChain + Memory | FDR 2 |
+|---------|-----|-------------------|-------|
+| **Context Persistence** | Session-only | Short-term buffer | Permanent graph |
+| **Multi-hop Reasoning** | Limited | Limited | Native |
+| **Semantic Coherence** | None | None | Aphelion Layer |
+| **Topology Awareness** | None | None | GNN-based |
+| **What-if Scenarios** | No | No | Yes |
+| **Entropy Regulation** | No | No | Yes |
+| **Self-healing** | No | No | Yes (extinction/rebirth) |
+| **Latency** | <100ms | ~200ms | ~500-1000ms |
+| **Complexity** | Low | Medium | High |
 
 ---
 
-## Diferencial do Projeto
+## 17. Future Work
 
-Este projeto se diferencia de RAG tradicionais por:
+**Short-term (3-6 months):**
+- Implement CNN for local pattern detection
+- Add Isolation Forest for anomaly detection
+- Autoencoder for sparse reconstruction
+- Expand Aphelion to multi-modal contexts
 
-- **Multi-retriever**: Três estratégias especializadas ao invés de uma genérica
-- **Graph reasoning**: Uso de Neo4j para análise de padrões
-- **ML-based reasoning**: GNN customizada para domínio financeiro
-- **Production-grade**: Arquitetura pensada para escala (event-driven, cache, observability)
+**Medium-term (6-12 months):**
+- Ray distributed inference for production scale
+- Temporal graph evolution tracking
+- Multi-user shared reasoning graphs
+- Domain-specific reasoning modules (finance, healthcare, legal)
 
-Comparado com projetos acadêmicos típicos (RAG simples com OpenAI API), demonstra:
-- Conhecimento de arquitetura de sistemas
-- Implementação de modelos customizados
-- Design de sistemas distribuídos
+**Long-term (1-2 years):**
+- Self-supervised learning for graph evolution
+- Meta-reasoning layer (reasoning about reasoning)
+- Federated FDR networks
+- Hardware acceleration (custom ASICs for graph ops)
 
 ---
 
-## Resumo Técnico
+## 18. Conclusion
 
-O Midas FDR é uma evolução do sistema RAG atual que adiciona capacidades de raciocínio através de uma arquitetura multi-retriever orquestrada. Utilizando Neo4j para análise de grafos e uma GNN customizada para reasoning, o sistema pode responder queries financeiras complexas que exigem análise de padrões e inferências multi-hop.
+**MIDAS FDR 2** proposes a new paradigm for reasoning architectures — not as a static retrieval system, but as a **living inferential organism**.
 
-**Stack principal:** FastAPI + LangGraph + Neo4j + PyTorch Geometric + PostgreSQL (pgvector)  
-**Complexidade:** Alta (sistema distribuído, ML customizado, orquestração de estado)  
-**Escopo:** Projeto acadêmico com arquitetura production-ready
+Its **neuroelastic topology** enables:
+- **Contextual persistence** without summarization
+- **Self-correction** through extinction/rebirth cycles
+- **Continuity of meaning** across arbitrarily long reasoning chains
+
+The system represents a transition from **context compression** to **context evolution** — a shift toward **synthetic intelligence**, where reasoning itself becomes a dynamic, adaptive structure.
+
+By integrating principles from:
+- **Neuroscience** (neuroplasticity, apoptosis)
+- **Graph theory** (topology, flow)
+- **Deep learning** (GNNs, attention mechanisms)
+- **Cognitive science** (multi-hop inference, semantic coherence)
+
+FDR 2 bridges the gap between **symbolic reasoning** and **neural cognition**, creating a framework capable of **thinking persistently** rather than merely **retrieving contextually**.
+
+---
+
+## 19. References
+
+1. Veličković, P., et al. (2018). *Graph Attention Networks*. ICLR.
+2. Hamilton, W., et al. (2017). *Inductive Representation Learning on Large Graphs*. NeurIPS.
+3. Lewis, P., et al. (2020). *Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks*. NeurIPS.
+4. Gao, J., et al. (2023). *Retrieval-Augmented Generation for Large Language Models: A Survey*. arXiv.
+5. Battaglia, P., et al. (2018). *Relational inductive biases, deep learning, and graph networks*. arXiv.
+6. Hassabis, D., et al. (2017). *Neuroscience-Inspired Artificial Intelligence*. Neuron.
+7. Page, L., et al. (1998). *The PageRank Citation Ranking: Bringing Order to the Web*. Stanford InfoLab.
+8. Neo4j Graph Data Science Library Documentation (2024).
+9. PyTorch Geometric Documentation (2024).
+
+---
+
+## 20. Appendix: Mathematical Notation
+
+**Graph Topology:**
+- $G = (V, E)$ — graph with nodes $V$ and edges $E$
+- $h_i \in \mathbb{R}^d$ — embedding of node $i$
+- $A \in \mathbb{R}^{n \times n}$ — adjacency matrix
+
+**Semantic Coherence:**
+
+$$
+C(G) = \frac{1}{|E|} \sum_{(i,j) \in E} \cos(h_i, h_j)
+$$
+
+**Extinction Condition:**
+
+$$
+\text{Extinction if } C(G_t) < \tau_{\text{survival}} \text{ for } k \geq \theta_{\text{extinction}}
+$$
+
+**Core Extraction (PageRank):**
+
+$$
+PR(i) = \frac{1-d}{N} + d \sum_{j \in \text{in}(i)} \frac{PR(j)}{|\text{out}(j)|}
+$$
+
+Where:
+- $d = 0.85$ (damping factor)
+- $\text{in}(i)$ = nodes with edges to $i$
+- $\text{out}(j)$ = outgoing edges from $j$
+
+**Graph Reconstruction:**
+
+$$
+G_{t+1} = \text{Reconstruct}(\text{Core}(G_t))
+$$
+
+Where $\text{Core}(G_t)$ extracts top-$k$ nodes by PageRank.
+
+**GAT Attention:**
+
+$$
+\alpha_{ij} = \frac{\exp(\text{LeakyReLU}(\mathbf{a}^T [W h_i \| W h_j]))}{\sum_{k \in \mathcal{N}(i)} \exp(\text{LeakyReLU}(\mathbf{a}^T [W h_i \| W h_k]))}
+$$
+
+$$
+h'_i = \sigma\left(\sum_{j \in \mathcal{N}(i)} \alpha_{ij} W h_j\right)
+$$
+
+---
+
+**END OF DOCUMENT**
+
+---
+
+**For implementation details, see:**
+- `MVP_PROOF_OF_CONCEPT.md` — Technical proof-of-concept documentation
+- `QUICK_START.md` — Setup and deployment guide
+- `app/cognitive/` — Source code for reasoning engine
+
+**Contact:**  
+Vinícius Ruggeri — viniruggeri@github  
+Project: https://github.com/viniruggeri/midas-fdr
 
 ---
 
