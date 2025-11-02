@@ -120,11 +120,11 @@ Graph Attention Networks (GAT) provide **topological awareness**:
 
 ```mermaid
 graph TB
-    subgraph User Layer
+    subgraph "User Layer"
         A[Natural Language Query]
     end
     
-    subgraph Deep Reasoning Layer DRL
+    subgraph "Deep Reasoning Layer DRL"
         B[Intent Classifier]
         B --> C[Multi-hop Reasoner]
         C --> D[Neuroelastic Graph]
@@ -133,13 +133,13 @@ graph TB
         F --> G[Entropy Regulator]
     end
     
-    subgraph Knowledge Layer
+    subgraph "Knowledge Layer"
         H[(Neo4j Graph)]
         I[SentenceTransformer]
         J[PyTorch Geometric]
     end
     
-    subgraph Generation Layer
+    subgraph "Generation Layer"
         K[GPT-4 / LLM]
         L[HumanizerLLM]
         M[ICE Context]
@@ -178,9 +178,9 @@ sequenceDiagram
     GNN->>GNN: GAT inference (node relevance)
     GNN-->>MH: Top nodes + confidence scores
     
-    MH->>MH: Multi-hop traversal (depth=3)
-    MH-->>APH: Check coherence (C=0.82)
-    APH-->>MH: ✓ Above threshold (τ=0.70)
+    MH->>MH: Multi-hop traversal depth=3
+    MH-->>APH: Check coherence C=0.82
+    APH-->>MH: Above threshold tau=0.70
     
     MH->>LLM: Assemble ICE context
     LLM->>LLM: Generate humanized response
@@ -262,8 +262,8 @@ graph TD
     H --> I[Context Assembly ICE]
     
     I --> J{Coherence Check<br/>Aphelion}
-    J -->|C < 0.70| K[Graph Reconstruction]
-    J -->|C ≥ 0.70| L[HumanizerLLM]
+    J -->|"C < 0.70"| K[Graph Reconstruction]
+    J -->|"C >= 0.70"| L[HumanizerLLM]
     
     K --> F
     L --> M[Final Response]
