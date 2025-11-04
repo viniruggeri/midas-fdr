@@ -44,12 +44,32 @@ The system introduces a **Deep Reasoning Layer (DRL)** capable of:
 - Python 3.10+
 - 8GB RAM minimum
 
-### Automated Setup (Windows)
+### Option 1: Docker Setup (Recommended)
+```bash
+# 1. Build the Docker image
+docker build -t midas-fdr-v2:latest .
+
+# 2. Start Neo4j
+docker-compose up -d
+
+# 3. Run the application
+docker run -p 8080:8080 \
+  --network host \
+  -e NEO4J_URI=bolt://localhost:7687 \
+  -e NEO4J_USER=neo4j \
+  -e NEO4J_PASSWORD=midas123 \
+  -e OPENAI_API_KEY=your-key-here \
+  midas-fdr-v2:latest
+
+# Access API at http://localhost:8080/docs
+```
+
+### Option 2: Automated Setup (Windows)
 ```powershell
 .\scripts\setup.ps1
 ```
 
-### Manual Setup
+### Option 3: Manual Setup
 ```bash
 # 1. Start Neo4j
 docker-compose up -d

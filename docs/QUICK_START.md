@@ -17,7 +17,38 @@ git --version
 
 ---
 
-## 📋 PASSO A PASSO (15 MINUTOS)
+## 🐳 OPÇÃO A: INSTALAÇÃO COM DOCKER (RECOMENDADO)
+
+Se você prefere usar Docker para rodar a aplicação completa:
+
+```bash
+# 1. Build da imagem
+docker build -t midas-fdr-v2:latest .
+
+# 2. Inicie o Neo4j
+docker-compose up -d
+
+# 3. Rode a aplicação
+docker run -p 8080:8080 \
+  --network host \
+  -e NEO4J_URI=bolt://localhost:7687 \
+  -e NEO4J_USER=neo4j \
+  -e NEO4J_PASSWORD=midas123 \
+  -e OPENAI_API_KEY=sua-chave-aqui \
+  midas-fdr-v2:latest
+```
+
+**✅ Acesse a API**: http://localhost:8080/docs
+
+**💡 Vantagens do Docker**:
+- ✅ Ambiente isolado e reproduzível
+- ✅ Não precisa instalar dependências Python localmente
+- ✅ PyTorch CPU-only otimizado
+- ✅ Build mais rápido com cache de camadas
+
+---
+
+## 📋 OPÇÃO B: PASSO A PASSO MANUAL (15 MINUTOS)
 
 ### **1️⃣ Inicie o Docker Desktop**
 
