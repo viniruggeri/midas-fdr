@@ -191,30 +191,31 @@ async def populate_graph(background_tasks: BackgroundTasks):
     """
     async def _populate():
         dummy_transactions = [
-            {"id": "tx001", "merchant": "ifood", "category": "alimentação", "amount": 45.0, "description": "delivery almoço hamburger", "timestamp": "2024-01-15T12:00:00"},
-            {"id": "tx002", "merchant": "uber", "category": "transporte", "amount": 18.5, "description": "corrida centro trabalho", "timestamp": "2024-01-15T14:30:00"},
-            {"id": "tx003", "merchant": "ifood", "category": "alimentação", "amount": 52.0, "description": "delivery jantar pizza", "timestamp": "2024-01-16T20:00:00"},
-            {"id": "tx004", "merchant": "rappi", "category": "alimentação", "amount": 38.0, "description": "delivery lanche açaí", "timestamp": "2024-01-17T16:00:00"},
-            {"id": "tx005", "merchant": "uber", "category": "transporte", "amount": 22.0, "description": "corrida aeroporto viagem", "timestamp": "2024-01-18T08:00:00"},
-            {"id": "tx006", "merchant": "amazon", "category": "compras", "amount": 120.0, "description": "livros técnicos programação", "timestamp": "2024-01-19T10:00:00"},
-            {"id": "tx007", "merchant": "ifood", "category": "alimentação", "amount": 41.0, "description": "delivery pizza calabresa", "timestamp": "2024-01-20T19:30:00"},
-            {"id": "tx008", "merchant": "magazine luiza", "category": "compras", "amount": 350.0, "description": "notebook dell inspiron", "timestamp": "2024-01-21T15:00:00"},
-            {"id": "tx009", "merchant": "rappi", "category": "alimentação", "amount": 29.0, "description": "delivery café starbucks", "timestamp": "2024-01-22T09:00:00"},
-            {"id": "tx010", "merchant": "uber", "category": "transporte", "amount": 15.0, "description": "corrida shopping morumbi", "timestamp": "2024-01-22T18:00:00"},
-            {"id": "tx011", "merchant": "ifood", "category": "alimentação", "amount": 58.0, "description": "delivery sushi japonês", "timestamp": "2024-01-23T20:00:00"},
-            {"id": "tx012", "merchant": "rappi", "category": "alimentação", "amount": 42.0, "description": "delivery hamburguer artesanal", "timestamp": "2024-01-24T19:00:00"},
-            {"id": "tx013", "merchant": "uber", "category": "transporte", "amount": 25.0, "description": "corrida paulista escritório", "timestamp": "2024-01-25T08:30:00"},
-            {"id": "tx014", "merchant": "mercado livre", "category": "compras", "amount": 89.0, "description": "fone bluetooth jbl", "timestamp": "2024-01-26T14:00:00"},
-            {"id": "tx015", "merchant": "ifood", "category": "alimentação", "amount": 36.0, "description": "delivery marmita fitness", "timestamp": "2024-01-27T12:30:00"},
-            {"id": "tx016", "merchant": "netflix", "category": "entretenimento", "amount": 55.0, "description": "assinatura mensal premium", "timestamp": "2024-01-28T10:00:00"},
-            {"id": "tx017", "merchant": "uber", "category": "transporte", "amount": 19.0, "description": "corrida casa noite", "timestamp": "2024-01-28T23:00:00"},
-            {"id": "tx018", "merchant": "amazon", "category": "compras", "amount": 145.0, "description": "mouse gamer logitech", "timestamp": "2024-01-29T16:00:00"},
-            {"id": "tx019", "merchant": "rappi", "category": "alimentação", "amount": 33.0, "description": "delivery pizza margherita", "timestamp": "2024-01-30T21:00:00"},
-            {"id": "tx020", "merchant": "spotify", "category": "entretenimento", "amount": 21.0, "description": "assinatura premium individual", "timestamp": "2024-01-31T09:00:00"},
-        ]
-        
+        {"transaction_id": "tx001", "merchant": "ifood", "category": "alimentação", "amount": 45.0, "description": "delivery almoço hamburger", "timestamp": "2024-01-15T12:00:00"},
+        {"transaction_id": "tx002", "merchant": "uber", "category": "transporte", "amount": 18.5, "description": "corrida centro trabalho", "timestamp": "2024-01-15T14:30:00"},
+        {"transaction_id": "tx003", "merchant": "ifood", "category": "alimentação", "amount": 52.0, "description": "delivery jantar pizza", "timestamp": "2024-01-16T20:00:00"},
+        {"transaction_id": "tx004", "merchant": "rappi", "category": "alimentação", "amount": 38.0, "description": "delivery lanche açaí", "timestamp": "2024-01-17T16:00:00"},
+        {"transaction_id": "tx005", "merchant": "uber", "category": "transporte", "amount": 22.0, "description": "corrida aeroporto viagem", "timestamp": "2024-01-18T08:00:00"},
+        {"transaction_id": "tx006", "merchant": "amazon", "category": "compras", "amount": 120.0, "description": "livros técnicos programação", "timestamp": "2024-01-19T10:00:00"},
+        {"transaction_id": "tx007", "merchant": "ifood", "category": "alimentação", "amount": 41.0, "description": "delivery pizza calabresa", "timestamp": "2024-01-20T19:30:00"},
+        {"transaction_id": "tx008", "merchant": "magazine luiza", "category": "compras", "amount": 350.0, "description": "notebook dell inspiron", "timestamp": "2024-01-21T15:00:00"},
+        {"transaction_id": "tx009", "merchant": "rappi", "category": "alimentação", "amount": 29.0, "description": "delivery café starbucks", "timestamp": "2024-01-22T09:00:00"},
+        {"transaction_id": "tx010", "merchant": "uber", "category": "transporte", "amount": 15.0, "description": "corrida shopping morumbi", "timestamp": "2024-01-22T18:00:00"},
+        {"transaction_id": "tx011", "merchant": "ifood", "category": "alimentação", "amount": 58.0, "description": "delivery sushi japonês", "timestamp": "2024-01-23T20:00:00"},
+        {"transaction_id": "tx012", "merchant": "rappi", "category": "alimentação", "amount": 42.0, "description": "delivery hamburguer artesanal", "timestamp": "2024-01-24T19:00:00"},
+        {"transaction_id": "tx013", "merchant": "uber", "category": "transporte", "amount": 25.0, "description": "corrida paulista escritório", "timestamp": "2024-01-25T08:30:00"},
+        {"transaction_id": "tx014", "merchant": "mercado livre", "category": "compras", "amount": 89.0, "description": "fone bluetooth jbl", "timestamp": "2024-01-26T14:00:00"},
+        {"transaction_id": "tx015", "merchant": "ifood", "category": "alimentação", "amount": 36.0, "description": "delivery marmita fitness", "timestamp": "2024-01-27T12:30:00"},
+        {"transaction_id": "tx016", "merchant": "netflix", "category": "entretenimento", "amount": 55.0, "description": "assinatura mensal premium", "timestamp": "2024-01-28T10:00:00"},
+        {"transaction_id": "tx017", "merchant": "uber", "category": "transporte", "amount": 19.0, "description": "corrida casa noite", "timestamp": "2024-01-28T23:00:00"},
+        {"transaction_id": "tx018", "merchant": "amazon", "category": "compras", "amount": 145.0, "description": "mouse gamer logitech", "timestamp": "2024-01-29T16:00:00"},
+        {"transaction_id": "tx019", "merchant": "rappi", "category": "alimentação", "amount": 33.0, "description": "delivery pizza margherita", "timestamp": "2024-01-30T21:00:00"},
+        {"transaction_id": "tx020", "merchant": "spotify", "category": "entretenimento", "amount": 21.0, "description": "assinatura premium individual", "timestamp": "2024-01-31T09:00:00"},
+    ]
+    
         for tx in dummy_transactions:
             await graph.add_transaction_node(**tx)
+
     
     background_tasks.add_task(_populate)
     return {"status": "populating", "message": "Grafo sendo populado com 20 transações (dataset para GNN)"}
@@ -244,11 +245,10 @@ async def train_gnn_endpoint(background_tasks: BackgroundTasks):
     Treina GNN com dados do grafo (background task)
     """
     import subprocess
-    
-    def _train():
-        subprocess.run(["python", "train_gnn.py"], check=False)
-    
-    background_tasks.add_task(_train)
+    try:
+        subprocess.run(["python", "scripts/train_gnn.py"], check=False)
+    except Exception as e:
+        print(f"Error at train GNN :/, see te error here: {e}")
     return {"status": "training_started", "message": "GNN training iniciado em background"}
 
 

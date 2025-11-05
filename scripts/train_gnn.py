@@ -2,6 +2,9 @@
 MIDAS FDR v2 - GNN Training Script
 Treina GNN com dados reais do grafo Neo4j
 """
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../app')))
 
 import asyncio
 import torch
@@ -14,19 +17,18 @@ from torch_geometric.data import Data, DataLoader
 
 async def fetch_training_data_from_neo4j(graph: NeuroelasticGraph, num_samples: int = 100):
     """
-    Busca subgrafos do Neo4j para treinar GNN
+    Busca subgrafos do Neo4j para treinar GNN, garantindo alinhamento de nó-feature-target.
     """
     training_data = []
     
+    # 1. Busca dos nós iniciais (sem alteração)
     async with graph.driver.session() as session:
-        # Buscar nós com embeddings
         result = await session.run("""
             MATCH (t:Transaction)
             WHERE t.embedding IS NOT NULL
-            RETURN t.id AS id, t.embedding AS embedding, t.access_count AS access_count
+            RETURN t.id AS id
             LIMIT $limit
         """, limit=num_samples)
-        
         nodes = [dict(record) async for record in result]
     
     print(f"Fetched {len(nodes)} nodes from Neo4j")
@@ -34,58 +36,87 @@ async def fetch_training_data_from_neo4j(graph: NeuroelasticGraph, num_samples: 
     # Para cada nó, criar subgrafo k-hop
     for node in nodes[:20]:  # Limitar para PoC
         try:
-            # Buscar vizinhança
+            # 2. Busca ALINHADA no Neo4j (INCLUINDO o nó START)
             async with graph.driver.session() as session:
+                # Modificação da query:
+                # - Inclui o nó inicial 'start' no conjunto de nós para features e targets.
+                # - Garante que 'embedding' e 'access_count' estão alinhados por nó.
                 result = await session.run("""
-                    MATCH path = (start:Transaction {id: $start_id})-[*1..2]-(neighbor)
+                    MATCH (start:Transaction {id: $start_id})
+                    WHERE start.embedding IS NOT NULL
+                    OPTIONAL MATCH (start)-[*1..2]-(neighbor)
                     WHERE neighbor.embedding IS NOT NULL
-                    RETURN collect(DISTINCT neighbor.id) AS neighbors,
-                           collect(DISTINCT neighbor.embedding) AS embeddings,
-                           collect(DISTINCT neighbor.access_count) AS access_counts
-                    LIMIT 20
+
+                    // Coletar o nó inicial e seus vizinhos
+                    WITH collect(start) + collect(neighbor) AS all_nodes
+                    
+                    // Desempacotar e usar DISTINCT para evitar duplicatas, LIMITANDO a 10 nós
+                    UNWIND all_nodes AS n
+                    WITH DISTINCT n
+                    LIMIT 10 
+                    
+                    // Retornar os dados alinhados
+                    RETURN n.id AS id, n.embedding AS embedding, n.access_count AS access_count
                 """, start_id=node["id"])
                 
-                record = await result.single()
-                if not record:
-                    continue
-                
-                neighbors = record["neighbors"]
-                embeddings = record["embeddings"]
-                access_counts = record["access_counts"]
+                data_records = [dict(record) async for record in result]
             
-            if len(neighbors) < 2:
+            num_nodes = len(data_records)
+
+            if num_nodes < 2:
                 continue
+
+            # 3. Construir Features e Targets ALINHADOS
             
-            # Construir features
-            node_features = np.array(embeddings[:10])  # Max 10 nós
+            # features e targets são extraídos de forma alinhada
+            embeddings = [r['embedding'] for r in data_records]
+            access_counts = [r['access_count'] for r in data_records]
+            node_ids = [r['id'] for r in data_records] # Útil para debug e mapeamento
+
+            node_features = np.array(embeddings)
+            x = torch.tensor(node_features, dtype=torch.float32)
             
-            # Edge index (grafo completo para simplificar)
-            num_nodes = len(node_features)
+            # Edge index (AGORA CORRETO: usa os IDs e o mapeamento local)
+            # É necessário remapear os IDs do Neo4j para índices locais (0, 1, 2, ...)
+            node_id_to_local_idx = {node_id: i for i, node_id in enumerate(node_ids)}
+            
+            # BUSCA DE ARESTAS (Necessário nova busca para mapear arestas corretamente)
+            # Para simplificar na PoC, vamos usar a estratégia do seu grafo completo
+            # (se a GNN for simples), mas o correto seria buscar as arestas internas
+            # entre os nós coletados.
+            
+            # --- Estratégia de Grafo Completo (Simplificada) ---
             edges = []
             for i in range(num_nodes):
-                for j in range(i+1, num_nodes):
-                    edges.append([i, j])
-                    edges.append([j, i])
+                for j in range(num_nodes):
+                    if i != j:
+                        edges.append([i, j])
             
             if not edges:
                 continue
+            # ----------------------------------------------------
+
+            edge_index = torch.tensor(edges, dtype=torch.long).t().contiguous()
             
-            edge_index = torch.tensor(edges, dtype=torch.long).t()
-            x = torch.tensor(node_features, dtype=torch.float32)
+            # 4. Target (com o número de nós correto)
+            access_counts_norm = np.array(access_counts)
+            min_val = access_counts_norm.min()
+            max_val = access_counts_norm.max()
+            # Garante que a divisão por zero não ocorra se todos os counts forem iguais
+            access_counts_norm = (access_counts_norm - min_val) / (max_val - min_val + 1e-6)
             
-            # Target: nós com alto access_count são relevantes
-            access_counts_norm = np.array(access_counts[:10])
-            access_counts_norm = (access_counts_norm - access_counts_norm.min()) / (access_counts_norm.max() - access_counts_norm.min() + 1e-6)
+            # `y` terá tamanho [num_nodes, 1], que é o esperado pelo PyG para predição por nó
             y = torch.tensor(access_counts_norm, dtype=torch.float32).unsqueeze(1)
+            
+            print(f"✓ Subgraph {node['id']} has {num_nodes} nodes. x.size(0)={x.size(0)}, y.size(0)={y.size(0)}")
             
             training_data.append(Data(x=x, edge_index=edge_index, y=y))
         
         except Exception as e:
-            print(f"Error processing node {node['id']}: {e}")
+            print(f"❌ Error processing node {node['id']}: {e}")
             continue
     
     return training_data
-
 
 async def train_gnn_on_real_data():
     """
@@ -124,10 +155,22 @@ async def train_gnn_on_real_data():
         
         for batch in loader:
             optimizer.zero_grad()
+            print(f"Batch size (nodes): {batch.x.size(0)}")
+            print(f"Batch size (labels): {batch.y.size(0)}")
+            print(f"Batch node features (x): {batch.x[:5]}")  # Exibir as primeiras 5 entradas
+            print(f"Batch labels (y): {batch.y[:5]}")  # Exibir as primeiras 5 labels
+
             
             # Forward
             node_relevance, _, _ = model(batch.x, batch.edge_index, batch=batch.batch)
-            
+            # Verificando as dimensões antes de calcular a perda
+            print(f"node_relevance size: {node_relevance.size()}")
+            print(f"batch.y size: {batch.y.size()}")
+
+            node_relevance = node_relevance.view(-1, 1)
+            # Se os tamanhos não forem compatíveis, você pode tentar ajustar
+            assert node_relevance.size(0) == batch.y.size(0), "Mismatch in batch sizes between node_relevance and batch.y"
+
             # Loss
             loss = F.mse_loss(node_relevance, batch.y)
             

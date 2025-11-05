@@ -2,8 +2,8 @@ from typing import Dict
 from enum import Enum
 import re
 
-from langchain.prompts import ChatPromptTemplate
-from langchain.schema import HumanMessage
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.messages import HumanMessage
 
 from ..models.schemas import QueryType
 

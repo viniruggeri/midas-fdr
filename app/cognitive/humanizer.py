@@ -16,10 +16,16 @@ class HumanizerLLM:
     - Modelo leve: gpt-4o-mini
     - Temperatura baixa: 0.3 (fidelidade aos dados)
     """
-    
     def __init__(self, api_key: str = None, model: str = "gpt-4o-mini"):
+        # Se não houver chave de API, o cliente não será inicializado
         self.api_key = api_key or os.getenv("OPENAI_API_KEY")
-        self.client = AsyncOpenAI(api_key=self.api_key)
+        
+        # Checagem caso não haja chave de API
+        if not self.api_key:
+            self.client = None
+        else:
+            self.client = AsyncOpenAI(api_key=self.api_key)
+        
         self.model = model
     
     async def humanize(self, ice_output: CognitiveOutput) -> str:
@@ -27,6 +33,11 @@ class HumanizerLLM:
         Traduz ICE para texto humanizado
         REGRA CRÍTICA: LLM apenas reformula dados existentes na ICE, sem adicionar fatos
         """
+        # Se a chave da API não estiver disponível, retornar um texto básico
+        if not self.api_key:
+            return f"Não foi possível gerar a tradução para a ICE: {ice_output.query}"
+        if not self.client:
+            return "Erro: chave de API do OpenAI não fornecida."
         # Serializar ICE para contexto
         ice_json = ice_output.to_json()
         

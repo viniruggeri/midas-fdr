@@ -15,25 +15,28 @@ RUN apt-get update && apt-get install -y \
     libomp-dev \
     libpq-dev \
     python3-dev \
-    && rm -rf /var/lib/apt/lists/*
+    gcc \
+    g++ && rm -rf /var/lib/apt/lists/*
 
 # Atualiza pip e instala wheel (pra builds mais rápidos)
 RUN pip install --upgrade pip wheel setuptools
 
-# Copia requirements
+# Instalar o PyTorch com suporte para CPU (garantindo que esteja no ambiente)
+RUN pip install torch==2.1.0+cpu torchvision==0.16.0+cpu torchaudio==2.1.0+cpu \
+    -f https://download.pytorch.org/whl/torch_stable.html
+
+# Copia o arquivo requirements.txt
 COPY requirements.txt /app/requirements.txt
 WORKDIR /app
 
-# Instala dependências (com flags que garantem fallback pro CPU)
-RUN pip install torch==2.1.0+cpu torchvision==0.16.0+cpu torchaudio==2.1.0+cpu \
-    -f https://download.pytorch.org/whl/torch_stable.html && \
-    pip install --no-cache-dir -r requirements.txt
+# Instalar dependências do projeto (já inclui o 'torch-scatter' no requirements.txt)
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copia código do projeto
+# Copia o código da aplicação
 COPY . /app
 
-# Expõe porta padrão do FastAPI
+# Expõe a porta padrão do FastAPI
 EXPOSE 8080
 
-# Comando padrão pra subir a API
+# Comando padrão para subir a API com o Uvicorn
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
