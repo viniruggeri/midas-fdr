@@ -249,8 +249,10 @@ class MIDASCognitiveEngine:
         # Calcular confiança baseada em GNN se disponível
         if results and "gnn_relevance" in results[0]:
             avg_gnn_relevance = np.mean([r.get("gnn_relevance", 0.5) for r in results])
+            top_relevance = results[0]['gnn_relevance']
+
             confidence = float(0.7 + 0.3 * avg_gnn_relevance)  # Boost com GNN
-            gnn_info = f" (GNN-enhanced: top relevance={results[0]['gnn_relevance']:.2f})"
+            gnn_info = f" (GNN-enhanced: top relevance={top_relevance:.2f})"
         else:
             confidence = 0.75
             gnn_info = ""

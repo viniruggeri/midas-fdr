@@ -2,12 +2,15 @@ from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Dict, Any, Optional
+from pathlib import Path
+import sys
 import uvicorn
 
 from config import settings
 from .rag.pipeline import RAGPipeline
 from .models.schemas import QueryRequest, QueryResponse, HealthResponse
 from .cognitive import NeuroelasticGraph, MIDASCognitiveEngine, HumanizerLLM, AphelionLayer
+from .cognitive.gnn_reasoner import GNNInferenceEngine
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -37,6 +40,36 @@ humanizer = HumanizerLLM()
 @app.on_event("startup")
 async def startup_event():
     await rag_pipeline.initialize()
+    ROOT_DIR = Path(__file__).resolve().parent.parent 
+    GNN_MODEL_FILENAME = "gnn_neuroelastic_pretrained.pt"
+    GNN_MODEL_PATH = ROOT_DIR / GNN_MODEL_FILENAME # Cria o path absoluto
+    
+    # print para debug!
+    print(f"DEBUG: Tentando carregar GNN de: {GNN_MODEL_PATH}")
+    
+    try:
+        if not GNN_MODEL_PATH.exists():
+            raise FileNotFoundError(f"Arquivo não encontrado: {GNN_MODEL_PATH}")
+            
+        # 1. Instancia o motor GNN
+        gnn_inference_engine = GNNInferenceEngine(model_path=str(GNN_MODEL_PATH))
+        
+        # 2. Injeta o motor carregado no NeuroelasticGraph (objeto 'graph')
+        if gnn_inference_engine.model is not None:
+            graph.gnn_engine = gnn_inference_engine
+            graph.use_gnn = True
+            print(f"✅ GNN Engine carregado e injetado. GNN ATIVO.")
+        else:
+            raise ValueError("O NeuroelasticGNN foi instanciado, mas falhou ao carregar pesos ou está inválido.")
+
+    except FileNotFoundError as fnf_e:
+        print(f"❌ Erro GNN: Arquivo do modelo não encontrado. GNN DESATIVADO. Detalhe: {fnf_e}")
+        graph.gnn_engine = None 
+        graph.use_gnn = False
+    except Exception as e:
+        print(f"❌ Erro FATAL GNN (Pytorch ou Outro). Desativando GNN. Detalhe: {e}")
+        graph.gnn_engine = None 
+        graph.use_gnn = False
 
 
 @app.on_event("shutdown")

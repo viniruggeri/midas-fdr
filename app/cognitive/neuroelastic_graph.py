@@ -162,7 +162,7 @@ class NeuroelasticGraph:
             result = await session.run("""
                 MATCH path = (start:Transaction {id: $start_id})-[*1..""" + str(max_depth) + """]->(target)
                 WITH target, path, 
-                     reduce(dist = 0, r IN relationships(path) | dist + 1.0/r.weight) AS distance
+                     reduce(dist = 0.0, r IN relationships(path) | dist + 1.0/r.weight) AS distance
                 ORDER BY distance ASC
                 LIMIT $max_results
                 RETURN target.id AS node_id,
@@ -206,8 +206,19 @@ class NeuroelasticGraph:
             
             # Inferência GNN
             subgraph = self.gnn_engine.create_subgraph_from_context(node_features_np, edge_index)
+            print(f"DEBUG GNN: Subgrafo criado. Features shape: {subgraph.x.shape if hasattr(subgraph, 'x') else 'N/A'}")
+            print(f"DEBUG GNN: Chamando inferência no engine: {self.gnn_engine.__class__.__name__}")
             gnn_result = self.gnn_engine.infer(subgraph)
-            
+            # >>> DEBUG AQUI: VERIFIQUE O CONTEÚDO DO gnn_result <<<
+            print("-" * 20)
+            print(f"DEBUG GNN: Inferência concluída. Chaves: {gnn_result.keys()}")
+            if 'node_relevance' in gnn_result:
+            # Mostra o tipo (deve ser numpy/tensor) e os primeiros valores
+                print(f"DEBUG GNN: Tipo de 'node_relevance': {type(gnn_result['node_relevance'])}")
+                print(f"DEBUG GNN: Amostra (Top 2) de relevância: {gnn_result['node_relevance'][:2]}")
+            else:
+                print("DEBUG GNN: CHAVE 'node_relevance' NÃO ENCONTRADA no resultado.")
+            print("-" * 20)
             # Adicionar relevância GNN aos resultados
             for i, result in enumerate(cypher_results[:len(node_ids)]):
                 result["gnn_relevance"] = float(gnn_result["node_relevance"][i])
@@ -216,7 +227,12 @@ class NeuroelasticGraph:
             cypher_results.sort(key=lambda x: x.get("gnn_relevance", 0), reverse=True)
             
         except Exception as e:
-            print(f"GNN refinement failed: {e}")
+            print("-" * 30)
+            print(f"!!! GNN REFINEMENT FAILED (DETALHE DA EXCEÇÃO) !!!")
+            print(f"ERRO: {e}")
+            import traceback
+            traceback.print_exc() # Imprime o stack trace completo
+            print("-" * 30)
         
         return cypher_results
     
